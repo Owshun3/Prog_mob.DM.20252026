@@ -1,0 +1,43 @@
+Faïza est une application Android de suivi d’entraînements de musculation, inspirée de Lyfta mais sans composantes sociales.
+Elle permet de créer un profil local, d’enregistrer des séances, de suivre sa progression et d’importer/exporter ses données via un fichier CSV.
+Les données sont stockées localement en SQLite.
+
+Equipe:
+Léoni SALLOT — étudiante L3 Informatique — leonisallot@gmail.com
+Océan SHAN YAN — étudiant L3 Informatique — shanyanocean@gmail.com
+
+lien du dépot : https://github.com/Owshun3/Prog_mob.DM.20252026.git
+
+Profil utilisateur : fiche personnelle (taille, poids, date de naissance, unités, thème, photos).
+
+Mur des séances : affichage chronologique des séances avec résumé et détail.
+
+Mode entraînement : création et suivi de séances, ajout/suppression de séries et d’exercices, prise de photo.
+
+Historique et graphiques : suivi des performances et 1RM (formule d’Epley).
+
+Import/Export CSV : import de données d’exemple et export des séances.
+
+Thèmes et accessibilité : clair/sombre, tailles de police adaptées.
+
+Installation et compilation : 
+
+1)Cloner le dépôt : git clone https://github.com/Owshun3/Prog_mob.DM.20252026.git
+2)Android Studio : version 
+3)Ouvrir le projet dans Android Studio.
+4)SDK minimum
+5)SDK cible
+
+
+Données et persistance
+
+Base : SQLite locale via DatabaseHelper.
+Structure :
+	Tables : Utilisateur, Seance, Exercice, Serie, Programme.
+Import/Export :
+	Format CSV conforme au fichier d’exemple.
+	Import idempotent (pas de doublons, clé naturelle définie dans le rapport).
+
+Utilisation de l’IA:
+	Aide à la conception UML, rédaction du README et génération de squelettes de code.
+	Contrôle humain systématique avant tout commit.
