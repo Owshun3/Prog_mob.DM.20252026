@@ -2,6 +2,7 @@ package com.example.faza;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.Date;
@@ -65,5 +66,48 @@ public class User {
 
         long id = db.insert(DatabaseHelper.TABLE_USER, null, values);
         return id;
+    }
+
+    public static User get(Context context) {
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.query(DatabaseHelper.TABLE_USER, null, null, null, null, null, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            User user = new User(
+                    cursor.getString(cursor.getColumnIndexOrThrow("pseudo")),
+                    new Date(cursor.getLong(cursor.getColumnIndexOrThrow("naissance"))),
+                    cursor.getInt(cursor.getColumnIndexOrThrow("taille")),
+                    cursor.getFloat(cursor.getColumnIndexOrThrow("poids")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("unite")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("theme")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("photoUri"))
+            );
+            cursor.close();
+            return user;
+        }
+        return null;
+    }
+
+    public int update(Context context) {
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("pseudo", pseudo);
+        values.put("naissance", naissance.getTime());
+        values.put("taille", taille);
+        values.put("poids", poids);
+        values.put("unite", unite);
+        values.put("theme", theme);
+        values.put("photoUri", photoUri);
+
+        return db.update(DatabaseHelper.TABLE_USER, values, null, null);
+    }
+
+    public static void delete(Context context) {
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.delete(DatabaseHelper.TABLE_USER, null, null);
     }
 }
