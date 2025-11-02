@@ -1,5 +1,9 @@
 package com.example.faza;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+
 import java.util.Date;
 
 public class User {
@@ -45,4 +49,21 @@ public class User {
     public void setUnite(String unite) {this.unite = unite;}
     public void setTheme(String theme) {this.theme = theme;}
     public void setPhotoUri(String photoUri) {this.photoUri = photoUri;}
+
+    public long insert(Context context) {
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("pseudo", pseudo);
+        values.put("naissance", naissance.getTime());
+        values.put("taille", taille);
+        values.put("poids", poids);
+        values.put("unite", unite);
+        values.put("theme", theme);
+        values.put("photoUri", photoUri);
+
+        long id = db.insert(DatabaseHelper.TABLE_USER, null, values);
+        return id;
+    }
 }
