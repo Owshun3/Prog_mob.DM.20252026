@@ -1,0 +1,31 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="32dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/img_photo"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@android:color/darker_gray"
+        android:scaleType="centerCrop"/>
+
+    <Button
+        android:id="@+id/btn_photo"
+        android:text="Prendre une photo"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="#786FE6ED"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btn_terminer"
+        android:text="Terminer"
+        android:layout_marginTop="16dp"
+
+        android:backgroundTint="#786FE6ED"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

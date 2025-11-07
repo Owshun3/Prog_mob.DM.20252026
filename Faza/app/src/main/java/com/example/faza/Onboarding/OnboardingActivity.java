@@ -1,0 +1,42 @@
+package com.example.faza.Onboarding;
+
+import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
+import com.example.faza.MainActivity;
+import com.example.faza.databinding.ActivityOnboardingBinding;
+import java.util.ArrayList;
+import java.util.List;
+
+public class OnboardingActivity extends AppCompatActivity {
+
+    private ActivityOnboardingBinding binding;
+    private OnboardingAdapter adapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = ActivityOnboardingBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        List<androidx.fragment.app.Fragment> fragments = new ArrayList<>();
+        fragments.add(new GenreFragment());
+        fragments.add(new InfosFragment());
+        fragments.add(new PhotoFragment());
+
+        adapter = new OnboardingAdapter(this, fragments);
+        binding.viewPager.setAdapter(adapter);
+        binding.viewPager.setUserInputEnabled(false);
+    }
+
+    public void nextPage() {
+        int nextItem = binding.viewPager.getCurrentItem() + 1;
+        if (nextItem < adapter.getItemCount()) {
+            binding.viewPager.setCurrentItem(nextItem);
+        }
+    }
+
+    public void finishOnboarding() {
+        startActivity(new android.content.Intent(this, MainActivity.class));
+        finish();
+    }
+}

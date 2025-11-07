@@ -11,6 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Faïza">
+
+        <activity android:name=".Onboarding.OnboardingActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
