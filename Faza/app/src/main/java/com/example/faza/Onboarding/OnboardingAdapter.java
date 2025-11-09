@@ -17,12 +17,8 @@ public class OnboardingAdapter extends FragmentStateAdapter {
 
     @NonNull
     @Override
-    public Fragment createFragment(int position) {
-        return fragments.get(position);
-    }
+    public Fragment createFragment(int position) {return fragments.get(position);}
 
     @Override
-    public int getItemCount() {
-        return fragments.size();
-    }
+    public int getItemCount() {return fragments.size();}
 }

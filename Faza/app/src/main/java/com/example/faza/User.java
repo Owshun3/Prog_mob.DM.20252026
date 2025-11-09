@@ -56,16 +56,15 @@ public class User {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put("pseudo", pseudo);
-        values.put("naissance", naissance.getTime());
-        values.put("taille", taille);
-        values.put("poids", poids);
-        values.put("unite", unite);
+        values.put("nom", pseudo);
+        values.put("date_naissance", naissance.getTime());
+        values.put("taille_cm", taille);
+        values.put("poids_kg", poids);
+        values.put("unite_poids", unite);
         values.put("theme", theme);
-        values.put("photoUri", photoUri);
+        values.put("photo_profil", photoUri);
 
-        long id = db.insert(DatabaseHelper.TABLE_USER, null, values);
-        return id;
+        return db.insert(DatabaseHelper.TABLE_USER, null, values);
     }
 
     public static User get(Context context) {
@@ -75,13 +74,13 @@ public class User {
         Cursor cursor = db.query(DatabaseHelper.TABLE_USER, null, null, null, null, null, null);
         if (cursor != null && cursor.moveToFirst()) {
             User user = new User(
-                    cursor.getString(cursor.getColumnIndexOrThrow("pseudo")),
-                    new Date(cursor.getLong(cursor.getColumnIndexOrThrow("naissance"))),
-                    cursor.getInt(cursor.getColumnIndexOrThrow("taille")),
-                    cursor.getFloat(cursor.getColumnIndexOrThrow("poids")),
-                    cursor.getString(cursor.getColumnIndexOrThrow("unite")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("nom")),
+                    new Date(cursor.getLong(cursor.getColumnIndexOrThrow("date_naissance"))),
+                    cursor.getInt(cursor.getColumnIndexOrThrow("taille_cm")),
+                    cursor.getFloat(cursor.getColumnIndexOrThrow("poids_kg")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("unite_poids")),
                     cursor.getString(cursor.getColumnIndexOrThrow("theme")),
-                    cursor.getString(cursor.getColumnIndexOrThrow("photoUri"))
+                    cursor.getString(cursor.getColumnIndexOrThrow("photo_profil"))
             );
             cursor.close();
             return user;
@@ -94,13 +93,13 @@ public class User {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put("pseudo", pseudo);
-        values.put("naissance", naissance.getTime());
-        values.put("taille", taille);
-        values.put("poids", poids);
-        values.put("unite", unite);
+        values.put("nom", pseudo);
+        values.put("date_naissance", naissance.getTime());
+        values.put("taille_cm", taille);
+        values.put("poids_kg", poids);
+        values.put("unite_poids", unite);
         values.put("theme", theme);
-        values.put("photoUri", photoUri);
+        values.put("photo_profil", photoUri);
 
         return db.update(DatabaseHelper.TABLE_USER, values, null, null);
     }

@@ -39,6 +39,6 @@
         android:text="Suivant"
         android:layout_marginTop="24dp"
         android:layout_width="match_parent"
-        android:backgroundTint="#786FE6ED"
+        android:backgroundTint="#784CDEE6"
         android:layout_height="wrap_content"/>
 </LinearLayout>

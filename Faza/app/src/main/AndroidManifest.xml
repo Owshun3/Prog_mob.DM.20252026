@@ -12,7 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Faïza">
 
-        <activity android:name=".Onboarding.OnboardingActivity" />
+        <activity
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:name=".Onboarding.OnboardingActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

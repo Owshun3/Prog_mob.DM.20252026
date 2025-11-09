@@ -11,7 +11,7 @@ public class OnboardingData {
 
     private String genre;
     private String pseudo;
-    private Date naissance;
+    private Date date_naissance;
     private float poids;
     private int taille;
 
@@ -21,8 +21,8 @@ public class OnboardingData {
     public String getPseudo() { return pseudo; }
     public void setPseudo(String pseudo) { this.pseudo = pseudo; }
 
-    public Date getNaissance() { return naissance; }
-    public void setNaissance(Date naissance) { this.naissance = naissance; }
+    public Date getNaissance() { return date_naissance; }
+    public void setNaissance(Date naissance) { this.date_naissance = naissance; }
 
     public float getPoids() { return poids; }
     public void setPoids(float poids) { this.poids = poids; }

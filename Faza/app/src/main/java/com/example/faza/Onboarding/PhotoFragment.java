@@ -87,11 +87,6 @@ public class PhotoFragment extends Fragment {
             return;
         }
 
-        if (photoUri == null) {
-            Toast.makeText(requireContext(), "Prenez une photo avant de continuer", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         User user = new User(
                 data.getPseudo(),
                 data.getNaissance(),
