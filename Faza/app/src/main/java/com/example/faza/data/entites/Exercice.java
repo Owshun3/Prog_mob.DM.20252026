@@ -1,4 +1,4 @@
-package com.example.faza;
+package com.example.faza.data.entites;
 
 import java.util.ArrayList;
 import java.util.List;

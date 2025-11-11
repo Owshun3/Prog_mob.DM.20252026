@@ -1,9 +1,11 @@
-package com.example.faza;
+package com.example.faza.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.faza.Onboarding.OnboardingActivity;
+import com.example.faza.R;
+import com.example.faza.data.entites.User;
+import com.example.faza.ui.Onboarding.OnboardingActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,5 +47,4 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
-
 }

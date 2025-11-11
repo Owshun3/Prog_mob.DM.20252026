@@ -1,8 +1,8 @@
-package com.example.faza.Onboarding;
+package com.example.faza.ui.Onboarding;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.faza.MainActivity;
+import com.example.faza.ui.MainActivity;
 import com.example.faza.databinding.ActivityOnboardingBinding;
 import java.util.ArrayList;
 import java.util.List;

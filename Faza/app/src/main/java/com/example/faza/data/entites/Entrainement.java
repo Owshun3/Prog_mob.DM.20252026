@@ -1,9 +1,9 @@
-package com.example.faza;
+package com.example.faza.data.entites;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Seance extends Programme{
+public class Entrainement extends Programme{
     private long id;
     private long idUser;
     private String dateSeance;
@@ -16,19 +16,28 @@ public class Seance extends Programme{
 
     private List<Exercice> exercices;
 
-    public Seance() {
+    public Entrainement() {
         exercices = new ArrayList<>();
     }
 
-    public Seance(long idUser, String dateSeance, int dureeMin, String photoFin,
-                  String commentaire) {
-        super(idUser, dureeMin, photoFin, commentaire);
+    public Entrainement(long idUser, String dateSeance, int dureeMin, String photoFin,
+                        String commentaire) {
+        super(idUser, photoFin, commentaire);
+        this.photoFin = photoFin;
         this.dateSeance = dateSeance;
+        this.dureeMin = dureeMin;
     }
+
 
     public long getId() { return id; }
     public void setId(long id) { this.id = id; }
 
     public String getDateSeance() { return dateSeance; }
     public void setDateSeance(String dateSeance) { this.dateSeance = dateSeance; }
+
+    public int getDureeMin() { return dureeMin; }
+    public void setDureeMin(int dureeMin) { this.dureeMin = dureeMin; }
+
+    public String getPhotoFin() { return photoFin; }
+    public void setPhotoFin(String photoFin) { this.photoFin = photoFin; }
 }

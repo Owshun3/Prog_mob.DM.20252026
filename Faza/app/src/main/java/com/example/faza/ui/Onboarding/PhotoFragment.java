@@ -1,4 +1,4 @@
-package com.example.faza.Onboarding;
+package com.example.faza.ui.Onboarding;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -17,7 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.example.faza.R;
-import com.example.faza.User;
+import com.example.faza.data.entites.User;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package com.example.faza.Onboarding;
+package com.example.faza.ui.Onboarding;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

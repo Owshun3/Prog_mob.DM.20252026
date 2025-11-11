@@ -1,4 +1,4 @@
-package com.example.faza.Onboarding;
+package com.example.faza.ui.Onboarding;
 
 import java.util.Date;
 

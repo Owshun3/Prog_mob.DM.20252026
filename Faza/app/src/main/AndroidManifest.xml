@@ -14,9 +14,9 @@
 
         <activity
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:name=".Onboarding.OnboardingActivity" />
+            android:name=".ui.Onboarding.OnboardingActivity" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="true"
             android:label="@string/app_name">
             <intent-filter>

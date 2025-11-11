@@ -1,4 +1,4 @@
-package com.example.faza;
+package com.example.faza.data.entites;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 public class Programme {
     private long id;
     private long idUser;
-    private int dureeMin;
+    private String nom;
     private double chargeTotale;
     private int nbSeries;
     private int nbRepetitions;
@@ -19,10 +19,9 @@ public class Programme {
         exercices = new ArrayList<>();
     }
 
-    public Programme(long idUser, int dureeMin, String photoFin, String commentaire) {
+    public Programme(long idUser, String nom, String commentaire) {
         this.idUser = idUser;
-        this.dureeMin = dureeMin;
-        this.photoFin = photoFin;
+        this.nom = nom;
         this.commentaire = commentaire;
         this.exercices = new ArrayList<>();
     }
@@ -51,8 +50,8 @@ public class Programme {
     public long getIdUser() { return idUser; }
     public void setIdUser(long idUser) { this.idUser = idUser; }
 
-    public int getDureeMin() { return dureeMin; }
-    public void setDureeMin(int dureeMin) { this.dureeMin = dureeMin; }
+    public String getNom() { return nom; }
+    public void setNom(String nom) { this.nom = nom; }
 
     public double getChargeTotale() { return chargeTotale; }
     public void setChargeTotale(double chargeTotale) { this.chargeTotale = chargeTotale; }
@@ -62,9 +61,6 @@ public class Programme {
 
     public int getNbRepetitions() { return nbRepetitions; }
     public void setNbRepetitions(int nbRepetitions) { this.nbRepetitions = nbRepetitions; }
-
-    public String getPhotoFin() { return photoFin; }
-    public void setPhotoFin(String photoFin) { this.photoFin = photoFin; }
 
     public String getCommentaire() { return commentaire; }
     public void setCommentaire(String commentaire) { this.commentaire = commentaire; }

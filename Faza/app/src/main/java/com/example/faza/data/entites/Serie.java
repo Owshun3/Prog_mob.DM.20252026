@@ -1,4 +1,4 @@
-package com.example.faza;
+package com.example.faza.data.entites;
 
 public class Serie {
     private long id;

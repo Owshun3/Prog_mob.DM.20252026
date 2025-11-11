@@ -1,9 +1,11 @@
-package com.example.faza;
+package com.example.faza.data.entites;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import com.example.faza.data.DatabaseHelper;
 
 import java.util.Date;
 
@@ -15,14 +17,10 @@ public class User {
     private String unite;
     private String theme;
     private String photoUri;
-
     private static final String PREFS_NAME = "user_prefs";
     private static final String KEY_THEME = "theme";
     private static final String KEY_FONT_SIZE = "font_size";
     private static final String KEY_UNIT = "unit";
-
-
-    public User() {}
 
     public User(String pseudo, Date naissance, int taille, float poids,
                 String unite, String theme, String photoUri) {

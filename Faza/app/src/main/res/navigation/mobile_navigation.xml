@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.example.faza.ui.dashboard.DashboardFragment"
+        android:name="com.example.faza.ui.PageEntrainement.EntrainementFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_entrainement" />
 
     <fragment
         android:id="@+id/navigation_notifications"

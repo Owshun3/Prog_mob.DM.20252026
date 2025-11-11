@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.faza.R;
-import com.example.faza.User;
+import com.example.faza.data.entites.User;
 
 public class HomeFragment extends Fragment {
 
