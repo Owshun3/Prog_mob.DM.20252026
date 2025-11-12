@@ -8,12 +8,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static DatabaseHelper instance;
 
     private static final String DATABASE_NAME = "faizaDB";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     public static final String TABLE_USER = "user";
     public static final String TABLE_ENTRAINEMENT = "entrainement";
     public static final String TABLE_EXERCICE = "exercice";
-    public static final String TABLE_ENTRAINEMENT_EXERCICE = "seance_exercice";
+    public static final String TABLE_ENTRAINEMENT_EXERCICE = "entrainement_exercice";
     public static final String TABLE_SERIE = "serie";
     public static final String TABLE_PROGRAMME = "programme";
     public static final String TABLE_PROGRAMME_EXERCICE = "programme_exercice";
@@ -53,19 +53,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "url_video TEXT, " +
                     "miniature TEXT);";
 
-    private static final String CREATE_SEANCE_EXERCICE =
+    private static final String CREATE_ENTRAINEMENT_EXERCICE =
             "CREATE TABLE " + TABLE_ENTRAINEMENT_EXERCICE + " (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "id_seance INTEGER NOT NULL, " +
+                    "id_entrainement INTEGER NOT NULL, " +
                     "id_exercice INTEGER NOT NULL, " +
                     "ordre INTEGER, " +
-                    "FOREIGN KEY(id_seance) REFERENCES " + TABLE_ENTRAINEMENT + "(id), " +
+                    "FOREIGN KEY(id_entrainement) REFERENCES " + TABLE_ENTRAINEMENT + "(id), " +
                     "FOREIGN KEY(id_exercice) REFERENCES " + TABLE_EXERCICE + "(id));";
 
     private static final String CREATE_SERIE =
             "CREATE TABLE " + TABLE_SERIE + " (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "id_seance_exercice INTEGER NOT NULL, " +
+                    "id_entrainement_exercice INTEGER NOT NULL, " +
                     "numero INTEGER, " +
                     "etiquette TEXT, " +
                     "poids REAL, " +
@@ -73,7 +73,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "rir INTEGER, " +
                     "rest_pause INTEGER, " +
                     "validee INTEGER, " +
-                    "FOREIGN KEY(id_seance_exercice) REFERENCES " + TABLE_ENTRAINEMENT_EXERCICE + "(id));";
+                    "FOREIGN KEY(id_entrainement_exercice) REFERENCES " + TABLE_ENTRAINEMENT_EXERCICE + "(id));";
 
     private static final String CREATE_PROGRAMME =
             "CREATE TABLE " + TABLE_PROGRAMME + " (" +
@@ -110,7 +110,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_USER);
         db.execSQL(CREATE_ENTRAINEMENT);
         db.execSQL(CREATE_EXERCICE);
-        db.execSQL(CREATE_SEANCE_EXERCICE);
+        db.execSQL(CREATE_ENTRAINEMENT_EXERCICE);
         db.execSQL(CREATE_SERIE);
         db.execSQL(CREATE_PROGRAMME);
         db.execSQL(CREATE_PROGRAMME_EXERCICE);
@@ -126,5 +126,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ENTRAINEMENT);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
         onCreate(db);
+    }
+
+    @Override
+    public void onConfigure(SQLiteDatabase db) {
+        super.onConfigure(db);
+        db.setForeignKeyConstraintsEnabled(true);
     }
 }
