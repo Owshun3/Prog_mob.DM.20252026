@@ -12,9 +12,9 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_entrainement"
         android:name="com.example.faza.ui.PageEntrainement.EntrainementFragment"
-        android:label="@string/title_dashboard"
+        android:label="Entrainement"
         tools:layout="@layout/fragment_entrainement" />
 
     <fragment

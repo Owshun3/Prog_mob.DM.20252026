@@ -9,6 +9,7 @@ public class Exercice {
     private String groupePrincipal;
     private String groupeSecondaire;
     private String description;
+    private int restPause;
     private String urlVideo;
     private String miniature;
 
@@ -50,4 +51,41 @@ public class Exercice {
     public void setGroupeSecondaire(String groupeSecondaire) {
         this.groupeSecondaire = groupeSecondaire;
     }
+
+    public String toCSV() {
+        if (id == -1 || nom == null) {
+            throw new IllegalArgumentException("Erreur: toCSV() d’un exercice invalide (id ou nom manquant)");
+        }
+        return id + ";" +
+                nom + ";" +
+                (groupePrincipal != null ? groupePrincipal : "") + ";" +
+                (groupeSecondaire != null ? groupeSecondaire : "") + ";" +
+                (description != null ? description : "") + ";" +
+                restPause + ";" +
+                (urlVideo != null ? urlVideo : "") + ";" +
+                (miniature != null ? miniature : "");
+    }
+
+    public static Exercice fromCSV(String line) {
+        String[] champs = line.split(";", -1); // -1 pour garder les champs vides
+        if (champs.length != 8) {
+            throw new IllegalArgumentException("Erreur: ligne CSV invalide pour Exercice (8 champs attendus): " + line);
+        }
+
+        try {
+            Exercice exercice = new Exercice();
+            exercice.setId(Long.parseLong(champs[0]));
+            exercice.setNom(champs[1]);
+            exercice.setGroupePrincipal(champs[2]);
+            exercice.setGroupeSecondaire(champs[3]);
+            exercice.setDescription(champs[4]);
+            exercice.restPause = Integer.parseInt(champs[5]);
+            exercice.urlVideo = champs[6];
+            exercice.miniature = champs[7];
+            return exercice;
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Erreur de parsing dans la ligne CSV pour Exercice: " + line, e);
+        }
+    }
+
 }

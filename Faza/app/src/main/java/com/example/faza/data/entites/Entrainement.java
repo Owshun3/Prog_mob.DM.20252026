@@ -40,4 +40,46 @@ public class Entrainement extends Programme{
 
     public String getPhotoFin() { return photoFin; }
     public void setPhotoFin(String photoFin) { this.photoFin = photoFin; }
+
+    @Override
+    public String toCSV() {
+        if (id == -1 || getNom() == null || dateSeance == null) {
+            throw new IllegalArgumentException("Erreur: toCSV() d’un entrainement invalide (id, nom ou date manquante)");
+        }
+        return id + ";" +
+                getIdUser() + ";" +
+                getNom() + ";" +
+                getChargeTotale() + ";" +
+                getNbSeries() + ";" +
+                getNbRepetitions() + ";" +
+                (photoFin != null ? photoFin : "") + ";" +
+                (getCommentaire() != null ? getCommentaire() : "") + ";" +
+                dateSeance + ";" +
+                dureeMin;
+    }
+
+    public static Entrainement fromCSV(String line) {
+        String[] champs = line.split(";", -1);
+        if (champs.length != 10) {
+            throw new IllegalArgumentException("Erreur: ligne CSV invalide pour Entrainement (10 champs attendus): " + line);
+        }
+
+        try {
+            Entrainement e = new Entrainement();
+            e.setId(Long.parseLong(champs[0]));
+            e.setIdUser(Long.parseLong(champs[1]));
+            e.setNom(champs[2]);
+            e.setChargeTotale(Double.parseDouble(champs[3]));
+            e.setNbSeries(Integer.parseInt(champs[4]));
+            e.setNbRepetitions(Integer.parseInt(champs[5]));
+            e.setPhotoFin(champs[6]);
+            e.setCommentaire(champs[7]);
+            e.setDateSeance(champs[8]);
+            e.setDureeMin(Integer.parseInt(champs[9]));
+            return e;
+        } catch (NumberFormatException ex) {
+            throw new IllegalArgumentException("Erreur de parsing dans la ligne CSV pour Entrainement: " + line, ex);
+        }
+    }
+
 }

@@ -107,4 +107,39 @@ public class User {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.delete(DatabaseHelper.TABLE_USER, null, null);
     }
+
+    public String toCSV() {
+        if (pseudo == null || naissance == null) {
+            throw new IllegalArgumentException("Erreur: toCSV() d’un user invalide (pseudo ou naissance manquante)");
+        }
+        return pseudo + ";" +
+                naissance.getTime() + ";" +
+                taille + ";" +
+                poids + ";" +
+                (unite != null ? unite : "") + ";" +
+                (theme != null ? theme : "") + ";" +
+                (photoUri != null ? photoUri : "");
+    }
+
+    public static User fromCSV(String line) {
+        String[] champs = line.split(";", -1);
+        if (champs.length != 7) {
+            throw new IllegalArgumentException("Erreur: ligne CSV invalide pour User (7 champs attendus): " + line);
+        }
+
+        try {
+            return new User(
+                    champs[0],
+                    new Date(Long.parseLong(champs[1])),
+                    Integer.parseInt(champs[2]),
+                    Float.parseFloat(champs[3]),
+                    champs[4],
+                    champs[5],
+                    champs[6]
+            );
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Erreur de parsing dans la ligne CSV pour User: " + line, e);
+        }
+    }
+
 }

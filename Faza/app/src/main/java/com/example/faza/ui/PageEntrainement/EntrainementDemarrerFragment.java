@@ -8,18 +8,38 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.faza.R;
 
-public class EntrainementDemarrerFragment {
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+public class EntrainementDemarrerFragment extends Fragment {
+    private Button btnCommencer;
+    private RecyclerView recyclerProgrammes;
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_entrainement_demarrer, container, false);
-        Button btnStart = view.findViewById(R.id.btnEntrainementVide);
 
-        btnStart.setOnClickListener(v->{
 
+        btnCommencer = view.findViewById(R.id.btnCommencer);
+        recyclerProgrammes = view.findViewById(R.id.recyclerProgrammes);
+
+
+        btnCommencer.setOnClickListener(v -> {
+            FragmentManager fm = getParentFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.replace(R.id.viewPagerEntrainement, new EntrainementEnCoursFragment());
+            ft.addToBackStack(null);
+            ft.commit();
         });
+
+
+        recyclerProgrammes.setLayoutManager(new LinearLayoutManager(getContext()));
 
         return view;
     }
