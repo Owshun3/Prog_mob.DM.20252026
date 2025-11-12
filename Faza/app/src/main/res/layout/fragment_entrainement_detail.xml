@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="@android:color/background_light">
+
+    <TextView
+        android:id="@+id/txtDateDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:text="Séance du ..."
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
+
+    <EditText
+        android:id="@+id/edtDureeDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Durée (en minutes)"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/edtCommentaireDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Commentaire"
+        android:inputType="textMultiLine"
+        android:lines="4"
+        android:gravity="top"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/btnSaveDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sauvegarder les modifications"
+        android:layout_marginTop="24dp" />
+</LinearLayout>
