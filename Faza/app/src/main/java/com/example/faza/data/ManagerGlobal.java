@@ -27,7 +27,6 @@ public class ManagerGlobal {
         this.programmes = new ArrayList<>();
         this.entrainements = new ArrayList<>();
     }
-
     public ArrayList<Programme> getProgrammes(){
         return this.programmes;
     }
@@ -40,6 +39,53 @@ public class ManagerGlobal {
     }
     public void setEntrainements(ArrayList<Entrainement> entrainements){
         this.entrainements = entrainements;
+    }
+    public void addProgramme(Programme p) {
+        programmes.add(p);
+    }
+
+    public boolean deleteProgramme(Programme p) {
+        return programmes.remove(p);
+    }
+    public Programme getProgrammeById(long id) {
+        for (Programme p : programmes) {
+            if (p.getId() == id) return p;
+        }
+        return null;
+    }
+    public void updateProgramme(long id, Programme nouveau) {
+        for (int i = 0; i < programmes.size(); i++) {
+            if (programmes.get(i).getId() == id) {
+                programmes.set(i, nouveau);
+                return;
+            }
+        }
+    }
+    public void addEntrainement(Entrainement e) {
+        entrainements.add(e);
+    }
+    public boolean deleteEntrainement(Entrainement e) {
+        return entrainements.remove(e);
+    }
+    public Entrainement getEntrainementById(long id) {
+        for (Entrainement e : entrainements) {
+            if (e.getId() == id) return e;
+        }
+        return null;
+    }
+    public void updateEntrainement(long id, Entrainement nouveau) {
+        for (int i = 0; i < entrainements.size(); i++) {
+            if (entrainements.get(i).getId() == id) {
+                entrainements.set(i, nouveau);
+                return;
+            }
+        }
+    }
+
+    public void clearAll() {
+        programmes.clear();
+        entrainements.clear();
+        user = null;
     }
 
     public String toCSV() {

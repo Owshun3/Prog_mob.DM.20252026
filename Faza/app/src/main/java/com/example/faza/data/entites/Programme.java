@@ -10,9 +10,7 @@ public class Programme {
     private double chargeTotale;
     private int nbSeries;
     private int nbRepetitions;
-    private String photoFin;
     private String commentaire;
-
     private List<Exercice> exercices;
 
     public Programme() {
@@ -22,9 +20,41 @@ public class Programme {
     public Programme(long idUser, String nom, String commentaire) {
         this.idUser = idUser;
         this.nom = nom;
+        this.chargeTotale = 0;
+        this.nbSeries = 0;
+        this.nbRepetitions = 0;
         this.commentaire = commentaire;
         this.exercices = new ArrayList<>();
     }
+
+    public void insertExercice(Exercice exercice) {
+        if (exercice == null) return;
+        exercices.add(exercice);
+        recalculerStats();
+    }
+
+    public void updateExercice(int index, Exercice exercice) {
+        if (index < 0 || index >= exercices.size() || exercice == null) return;
+        exercices.set(index, exercice);
+        recalculerStats();
+    }
+
+    public void deleteExercice(int index) {
+        if (index < 0 || index >= exercices.size()) return;
+        exercices.remove(index);
+        recalculerStats();
+    }
+
+    public Exercice getExercice(int index) {
+        if (index < 0 || index >= exercices.size()) return null;
+        return exercices.get(index);
+    }
+
+    private void recalculerStats() {
+        calculerChargeEtStats();
+    }
+
+
 
     public void calculerChargeEtStats() {
         double total = 0;
@@ -76,13 +106,12 @@ public class Programme {
                 chargeTotale + ";" +
                 nbSeries + ";" +
                 nbRepetitions + ";" +
-                (photoFin != null ? photoFin : "") + ";" +
                 (commentaire != null ? commentaire : "");
     }
 
     public static Programme fromCSV(String line) {
         String[] champs = line.split(";", -1);
-        if (champs.length != 8) {
+        if (champs.length != 7) {
             throw new IllegalArgumentException("Erreur: ligne CSV invalide pour Programme (8 champs attendus): " + line);
         }
 
@@ -94,8 +123,7 @@ public class Programme {
             p.setChargeTotale(Double.parseDouble(champs[3]));
             p.setNbSeries(Integer.parseInt(champs[4]));
             p.setNbRepetitions(Integer.parseInt(champs[5]));
-            p.photoFin = champs[6];
-            p.setCommentaire(champs[7]);
+            p.setCommentaire(champs[6]);
             return p;
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Erreur de parsing dans la ligne CSV pour Programme: " + line, e);

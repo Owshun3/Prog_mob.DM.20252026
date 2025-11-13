@@ -12,11 +12,13 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.faza.data.entites.Entrainement;
 import com.example.faza.ui.Onboarding.*;
 import com.example.faza.R;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -38,8 +40,6 @@ public class EntrainementFragment extends Fragment {
             public int getItemCount() {
                 return 2;
             }
-
-
             @Override
             public Fragment createFragment(int position) {
                 if (position == 0) return new EntrainementDemarrerFragment();
@@ -51,31 +51,5 @@ public class EntrainementFragment extends Fragment {
                 (tab, position) -> tab.setText(position == 0 ? "Démarrer" : "Bibliothèque")).attach();
 
         return view;
-    }
-
-    private void addNewEntrainement() {
-        Entrainement e = new Entrainement();
-        e.setIdUser(1);
-        e.setDateSeance(new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(new Date()));
-        e.setDureeMin(0);
-        e.setNbSeries(0);
-        e.setChargeTotale(0);
-        e.insert(requireContext());
-
-        Toast.makeText(requireContext(), "Nouvel entraînement ajouté ✅", Toast.LENGTH_SHORT).show();
-        loadEntrainements();
-    }
-
-    private void loadEntrainements() {
-        List<Entrainement> list = Entrainement.getAll(requireContext());
-        adapter = new EntrainementAdapter(list);
-        recyclerView.setAdapter(adapter);
-
-        adapter.setOnItemClickListener(entrainement -> {
-            Bundle bundle = new Bundle();
-            bundle.putLong("entrainement_id", entrainement.getId());
-            NavHostFragment.findNavController(this)
-                    .navigate(R.id.action_dashboard_to_detail, bundle);
-        });
     }
 }

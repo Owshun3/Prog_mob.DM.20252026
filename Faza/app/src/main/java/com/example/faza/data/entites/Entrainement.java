@@ -8,51 +8,21 @@ import com.example.faza.data.DatabaseHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Entrainement{
-    private long id;
-    private long idUser;
+public class Entrainement extends Programme{
     private String dateSeance;
     private int dureeMin;
-    private double chargeTotale;
-    private int nbSeries;
-    private int nbRepetitions;
     private String photoFin;
-    private String commentaire;
 
-    private List<Exercice> exercices;
-
-    public Entrainement() {
-        exercices = new ArrayList<>();
-    }
-
-    public Entrainement(long idUser, String dateSeance, int dureeMin, String photoFin,
-                        String commentaire) {
-        this.idUser = idUser;
-        this.photoFin = photoFin;
+    public Entrainement(long idUser, String nom, String commentaire, String dateSeance, int dureeMin, String photoFin) {
+        super(idUser, nom, commentaire);
         this.dateSeance = dateSeance;
         this.dureeMin = dureeMin;
-        this.commentaire = commentaire;
+        this.photoFin = photoFin;
     }
 
-    public long insert(Context context) {
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put("id_user", idUser);
-        values.put("date_seance", dateSeance);
-        values.put("duree_min", dureeMin);
-        values.put("charge_totale", chargeTotale);
-        values.put("nb_series", nbSeries);
-        values.put("nb_repetitions", nbRepetitions);
-        values.put("photo_fin", photoFin);
-        values.put("commentaire", commentaire);
-
-        long id = db.insert(DatabaseHelper.TABLE_ENTRAINEMENT, null, values);
-        this.id = id;
-
-        db.close();
-        return id;
+    public Entrainement() {
+        super();
+        this.photoFin = "null";
     }
 
     public static List<Entrainement> getAll(Context context) {
@@ -110,53 +80,20 @@ public class Entrainement{
         return e;
     }
 
-    public int update(Context context) {
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put("duree_min", dureeMin);
-        values.put("commentaire", commentaire);
-        values.put("charge_totale", chargeTotale);
-        values.put("nb_series", nbSeries);
-        values.put("nb_repetitions", nbRepetitions);
-        values.put("photo_fin", photoFin);
-
-        int rows = db.update(DatabaseHelper.TABLE_ENTRAINEMENT, values, "id = ?", new String[]{String.valueOf(id)});
-        db.close();
-        return rows;
-    }
-
-    public long getId() { return id; }
-    public void setId(long id) { this.id = id; }
-
-    public long getIdUser() { return idUser; }
-    public void setIdUser(long idUser) { this.idUser = idUser; }
-
     public String getDateSeance() { return dateSeance; }
     public void setDateSeance(String dateSeance) { this.dateSeance = dateSeance; }
 
     public int getDureeMin() { return dureeMin; }
     public void setDureeMin(int dureeMin) { this.dureeMin = dureeMin; }
-
-    public double getChargeTotale() { return chargeTotale; }
-    public void setChargeTotale(double chargeTotale) { this.chargeTotale = chargeTotale; }
-
-    public int getNbSeries() { return nbSeries; }
-    public void setNbSeries(int nbSeries) { this.nbSeries = nbSeries; }
-
-    public int getNbRepetitions() { return nbRepetitions; }
-    public void setNbRepetitions(int nbRepetitions) { this.nbRepetitions = nbRepetitions; }
-
     public String getPhotoFin() { return photoFin; }
     public void setPhotoFin(String photoFin) { this.photoFin = photoFin; }
 
     @Override
     public String toCSV() {
-        if (id == -1 || getNom() == null || dateSeance == null) {
+        if (getId() == -1 || getNom() == null || dateSeance == null) {
             throw new IllegalArgumentException("Erreur: toCSV() d’un entrainement invalide (id, nom ou date manquante)");
         }
-        return id + ";" +
+        return getId() + ";" +
                 getIdUser() + ";" +
                 getNom() + ";" +
                 getChargeTotale() + ";" +

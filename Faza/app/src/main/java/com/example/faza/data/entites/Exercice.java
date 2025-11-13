@@ -23,10 +23,37 @@ public class Exercice {
         this.nom = nom;
         this.series = new ArrayList<>();
     }
+    public void insertSerie(Serie s) {
+        if (s == null) throw new IllegalArgumentException("La série ne peut pas être nulle");
+        series.add(s);
+    }
+
+    public Serie getSerieByIndex(int index) {
+        if (index < 0 || index >= series.size()) {
+            throw new IndexOutOfBoundsException("Index de lecture invalide: " + index);
+        }
+        return series.get(index);
+    }
+
+    public void updateSerie(int index, Serie s) {
+        if (index < 0 || index >= series.size()) {
+            throw new IndexOutOfBoundsException("Index de mise à jour invalide: " + index);
+        }
+        if (s == null) {
+            throw new IllegalArgumentException("La série ne peut pas être nulle");
+        }
+        series.set(index, s);
+    }
+
+    public void deleteSerie(int index) {
+        if (index < 0 || index >= series.size()) {
+            throw new IndexOutOfBoundsException("Index de suppression invalide: " + index);
+        }
+        series.remove(index);
+    }
 
     public List<Serie> getSeries() { return series; }
     public void setSeries(List<Serie> series) { this.series = series; }
-
     public void ajouterSerie(Serie s) {
         series.add(s);
     }
