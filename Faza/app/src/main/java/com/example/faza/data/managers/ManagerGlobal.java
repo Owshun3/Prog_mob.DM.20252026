@@ -1,93 +1,44 @@
-package com.example.faza.data;
+package com.example.faza.data.managers;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
 import com.example.faza.data.DatabaseHelper;
-import com.example.faza.data.DBAdapter;
-import com.example.faza.data.entites.Exercice;
 import com.example.faza.data.entites.User;
 import com.example.faza.data.entites.Programme;
 import com.example.faza.data.entites.Entrainement;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ManagerGlobal {
+    private static ManagerGlobal instance;
+    private final Context context;
     private final DatabaseHelper dbHelper;
-    private ArrayList<Programme> programmes;
-    private ArrayList<Entrainement> entrainements;
     private User user;
-
+    private final ManagerProgramme managerProgramme = new ManagerProgramme();
+    private final ManagerExercice managerExercice = new ManagerExercice();
+    private final ManagerSerie managerSerie = new ManagerSerie();
     public ManagerGlobal(Context context, User user) {
+        this.context = context.getApplicationContext();
         this.dbHelper = DatabaseHelper.getInstance(context);
         this.user = user;
-        this.programmes = new ArrayList<>();
-        this.entrainements = new ArrayList<>();
     }
-    public ArrayList<Programme> getProgrammes(){
-        return this.programmes;
-    }
-    public void setProgrammes(ArrayList<Programme> programmes){
-        this.programmes = programmes;
-    }
-
-    public ArrayList<Entrainement> getEntrainements(){
-        return this.entrainements;
-    }
-    public void setEntrainements(ArrayList<Entrainement> entrainements){
-        this.entrainements = entrainements;
-    }
-    public void addProgramme(Programme p) {
-        programmes.add(p);
-    }
-
-    public boolean deleteProgramme(Programme p) {
-        return programmes.remove(p);
-    }
-    public Programme getProgrammeById(long id) {
-        for (Programme p : programmes) {
-            if (p.getId() == id) return p;
-        }
-        return null;
-    }
-    public void updateProgramme(long id, Programme nouveau) {
-        for (int i = 0; i < programmes.size(); i++) {
-            if (programmes.get(i).getId() == id) {
-                programmes.set(i, nouveau);
-                return;
-            }
+    public static synchronized void intialize(Context context, User user){
+        if(instance == null){
+            instance = new ManagerGlobal(context, user);
         }
     }
-    public void addEntrainement(Entrainement e) {
-        entrainements.add(e);
-    }
-    public boolean deleteEntrainement(Entrainement e) {
-        return entrainements.remove(e);
-    }
-    public Entrainement getEntrainementById(long id) {
-        for (Entrainement e : entrainements) {
-            if (e.getId() == id) return e;
+    public static ManagerGlobal getInstance(){
+        if(instance == null){
+            throw new IllegalStateException("ManagerGlobal non initialisé !");
         }
-        return null;
-    }
-    public void updateEntrainement(long id, Entrainement nouveau) {
-        for (int i = 0; i < entrainements.size(); i++) {
-            if (entrainements.get(i).getId() == id) {
-                entrainements.set(i, nouveau);
-                return;
-            }
-        }
+        return instance;
     }
 
-    public void clearAll() {
-        programmes.clear();
-        entrainements.clear();
-        user = null;
-    }
+    public ManagerProgramme getManagerProgramme() { return managerProgramme; }
+    public ManagerExercice getManagerExercice() { return managerExercice; }
+    public ManagerSerie getManagerSerie() { return managerSerie; }
 
+    /*
     public String toCSV() {
         StringBuilder sb = new StringBuilder();
 
@@ -144,5 +95,6 @@ public class ManagerGlobal {
             }
         }
     }
+    */
 
 }

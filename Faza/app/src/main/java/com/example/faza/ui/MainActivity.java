@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.faza.R;
+import com.example.faza.data.managers.ManagerGlobal;
 import com.example.faza.data.entites.User;
 import com.example.faza.ui.Onboarding.OnboardingActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
             finish();
             return;
         }
+        ManagerGlobal.intialize(this, existingUser);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());

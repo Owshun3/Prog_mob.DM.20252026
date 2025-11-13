@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-
     <TextView
         android:id="@+id/chronoText"
         android:layout_width="match_parent"
@@ -13,7 +12,6 @@
         android:textSize="24sp"
         android:gravity="center"
         android:text="00:00" />
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerExercices"

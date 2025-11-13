@@ -42,12 +42,11 @@ public class EntrainementDetailFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_entrainement_detail, container, false);
-
         txtDate = view.findViewById(R.id.txtDateDetail);
         edtDuree = view.findViewById(R.id.edtDureeDetail);
         edtCommentaire = view.findViewById(R.id.edtCommentaireDetail);
         btnSave = view.findViewById(R.id.btnSaveDetail);
-
+        /*
         if (getArguments() != null) {
             entrainementId = getArguments().getLong(ARG_ID);
             entrainement = Entrainement.getById(requireContext(), entrainementId);
@@ -58,12 +57,12 @@ public class EntrainementDetailFragment extends Fragment {
             edtDuree.setText(String.valueOf(entrainement.getDureeMin()));
             edtCommentaire.setText(entrainement.getCommentaire() != null ? entrainement.getCommentaire() : "");
         }
-
-        btnSave.setOnClickListener(v -> saveChanges());
+        */
+        //btnSave.setOnClickListener(v -> saveChanges());
 
         return view;
     }
-
+    /*
     private void saveChanges() {
         if (entrainement == null) return;
 
@@ -71,7 +70,7 @@ public class EntrainementDetailFragment extends Fragment {
         entrainement.setDureeMin(TextUtils.isEmpty(dureeText) ? 0 : Integer.parseInt(dureeText));
         entrainement.setCommentaire(edtCommentaire.getText().toString());
 
-        int rows = entrainement.update(requireContext());
+        int rows = entrainement.updateExercice();
         if (rows > 0) {
             Toast.makeText(requireContext(), "Entraînement mis à jour", Toast.LENGTH_SHORT).show();
             NavHostFragment.findNavController(this).navigateUp();
@@ -79,4 +78,5 @@ public class EntrainementDetailFragment extends Fragment {
             Toast.makeText(requireContext(), "Erreur lors de la mise à jour", Toast.LENGTH_SHORT).show();
         }
     }
+    */
 }

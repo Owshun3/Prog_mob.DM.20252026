@@ -29,15 +29,12 @@ public class EntrainementDemarrerFragment extends Fragment {
         btnCommencer = view.findViewById(R.id.btnCommencer);
         recyclerProgrammes = view.findViewById(R.id.recyclerProgrammes);
 
-
         btnCommencer.setOnClickListener(v -> {
-            FragmentManager fm = getParentFragmentManager();
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.replace(R.id.viewPagerEntrainement, new EntrainementEnCoursFragment());
-            ft.addToBackStack(null);
-            ft.commit();
+            Fragment parent = getParentFragment();
+            if (parent instanceof EntrainementFragment) {
+                ((EntrainementFragment) parent).afficherEntrainementEnCours();
+            }
         });
-
 
         recyclerProgrammes.setLayoutManager(new LinearLayoutManager(getContext()));
 

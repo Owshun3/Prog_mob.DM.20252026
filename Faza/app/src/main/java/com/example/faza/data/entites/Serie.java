@@ -23,8 +23,6 @@ public class Serie {
         this.validee = validee;
     }
 
-    public double getPoids() { return poids; }
-    public int getRepetitions() { return repetitions; }
 
     public String toCSV(){
         if(id == -1){
@@ -51,4 +49,11 @@ public class Serie {
                     "CSV pour Serie: " + line, e);
         }
     }
+    public long getId() { return id; } public void setId(long id) { this.id = id; }
+    public double getPoids() { return poids; } public void setPoids(double poids) { this.poids = poids; }
+    public int getRepetitions() { return repetitions; } public void setRepetitions(int repetitions) { this.repetitions = repetitions; }
+    public int getRir() { return rir; } public void setRir(int rir) { this.rir = rir; }
+    public boolean isValidee() { return validee; } public void setValidee(boolean validee) { this.validee = validee; }
+
+
 }
