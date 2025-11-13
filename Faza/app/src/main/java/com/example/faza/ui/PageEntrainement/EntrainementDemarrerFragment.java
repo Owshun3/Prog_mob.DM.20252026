@@ -33,7 +33,7 @@ public class EntrainementDemarrerFragment extends Fragment {
         btnCommencer.setOnClickListener(v -> {
             FragmentManager fm = getParentFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
-            ft.replace(R.id.viewPagerEntrainement, new EntrainementEnCoursFragment());
+            //ft.replace(R.id.viewPagerEntrainement, new EntrainementEnCoursFragment());
             ft.addToBackStack(null);
             ft.commit();
         });

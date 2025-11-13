@@ -71,12 +71,12 @@ public class EntrainementDetailFragment extends Fragment {
         entrainement.setDureeMin(TextUtils.isEmpty(dureeText) ? 0 : Integer.parseInt(dureeText));
         entrainement.setCommentaire(edtCommentaire.getText().toString());
 
-        int rows = entrainement.update(requireContext());
+        /*int rows = entrainement.update(requireContext());
         if (rows > 0) {
             Toast.makeText(requireContext(), "Entraînement mis à jour", Toast.LENGTH_SHORT).show();
             NavHostFragment.findNavController(this).navigateUp();
         } else {
             Toast.makeText(requireContext(), "Erreur lors de la mise à jour", Toast.LENGTH_SHORT).show();
-        }
+        }*/
     }
 }

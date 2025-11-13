@@ -1,16 +1,22 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.Faïza" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">#784CDEE6</item>
-        <item name="colorPrimaryVariant">#3FD5D7</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">#E671C6</item>
-        <item name="colorSecondaryVariant">#E962DE</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+<resources>
+
+    <style name="Theme.Faiza.Soft" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/soft_primary_variant</item>
+        <item name="android:navigationBarColor">@color/soft_primary</item>
+
+        <item name="colorPrimary">@color/soft_primary</item>
+        <item name="colorPrimaryVariant">@color/soft_primary_variant</item>
+        <item name="colorSecondary">@color/soft_secondary</item>
+
+        <item name="android:textColor">@color/soft_on_bg</item>
+        <item name="android:background">@color/soft_bg</item>
     </style>
+
+    <style name="Theme.Faiza.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/soft_primary</item>
+        <item name="colorPrimaryVariant">@color/soft_primary_variant</item>
+        <item name="colorSecondary">@color/soft_secondary</item>
+        <item name="android:background">@color/soft_bg</item>
+    </style>
+
 </resources>

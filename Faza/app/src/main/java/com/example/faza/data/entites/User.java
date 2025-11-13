@@ -4,12 +4,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-
 import com.example.faza.data.DatabaseHelper;
-
 import java.util.Date;
 
 public class User {
+
     private String pseudo;
     private Date naissance;
     private int taille;
@@ -28,8 +27,8 @@ public class User {
         this.naissance = naissance;
         this.taille = taille;
         this.poids = poids;
-        this.unite = unite;
-        this.theme = theme;
+        this.unite = normalizeUnit(unite);
+        this.theme = normalizeTheme(theme);
         this.photoUri = photoUri;
     }
 
@@ -45,9 +44,25 @@ public class User {
     public void setNaissance(Date naissance) {this.naissance = naissance;}
     public void setTaille(int taille) {this.taille = taille;}
     public void setPoids(float poids) {this.poids = poids;}
-    public void setUnite(String unite) {this.unite = unite;}
-    public void setTheme(String theme) {this.theme = theme;}
+    public void setUnite(String unite) {this.unite = normalizeUnit(unite);}
+    public void setTheme(String theme) {this.theme = normalizeTheme(theme);}
     public void setPhotoUri(String photoUri) {this.photoUri = photoUri;}
+
+    private String normalizeTheme(String t) {
+        if (t == null) return "clair";
+        t = t.trim().toLowerCase();
+
+        if (t.equals("sombre") || t.equals("dark")) return "sombre";
+        return "clair";
+    }
+
+    private String normalizeUnit(String u) {
+        if (u == null) return "kg";
+        u = u.trim().toLowerCase();
+
+        if (u.equals("lb") || u.equals("lbs")) return "lb";
+        return "kg";
+    }
 
     public long insert(Context context) {
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
