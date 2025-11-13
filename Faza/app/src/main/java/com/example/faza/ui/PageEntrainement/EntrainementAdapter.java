@@ -32,9 +32,9 @@ public class EntrainementAdapter extends RecyclerView.Adapter<EntrainementAdapte
         Entrainement e = entrainements.get(position);
 
         holder.txtDate.setText(e.getDateSeance() != null ? e.getDateSeance() : "Date inconnue");
-
+        /*
         String infos = "Durée : " + e.getDureeMin() + " min";
-        if (e.getNbSeries() > 0) infos += " | Séries : " + e.getNbSeries();
+        if (e.getProgramme().getNbSeries() > 0) infos += " | Séries : " + e.getNbSeries();
         if (e.getChargeTotale() > 0) infos += " | Charge : " + e.getChargeTotale() + " kg";
 
         holder.txtInfos.setText(infos);
@@ -42,6 +42,7 @@ public class EntrainementAdapter extends RecyclerView.Adapter<EntrainementAdapte
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onItemClick(e);
         });
+        */
     }
 
     @Override
