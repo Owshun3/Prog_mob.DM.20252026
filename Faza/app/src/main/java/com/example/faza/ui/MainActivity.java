@@ -8,14 +8,17 @@ import com.example.faza.data.managers.ManagerGlobal;
 import com.example.faza.data.entites.User;
 import com.example.faza.ui.Onboarding.OnboardingActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-
+import com.example.faza.R;
+import com.example.faza.data.entites.User;
 import com.example.faza.databinding.ActivityMainBinding;
+import com.example.faza.ui.Onboarding.OnboardingActivity;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,17 +26,24 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
         User existingUser = User.get(this);
 
         if (existingUser == null) {
-            Intent intent = new Intent(this, OnboardingActivity.class);
-            startActivity(intent);
+            super.onCreate(savedInstanceState);
+            startActivity(new Intent(this, OnboardingActivity.class));
             finish();
             return;
         }
         ManagerGlobal.intialize(this, existingUser);
+
+        if ("sombre".equalsIgnoreCase(existingUser.getTheme())) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+
+        super.onCreate(savedInstanceState);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -46,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         ).build();
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
 }

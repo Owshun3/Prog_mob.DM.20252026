@@ -22,4 +22,10 @@
         android:name="com.example.faza.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@+id/navigation_profile_edit"
+        android:name="com.example.faza.ui.home.EditProfileFragment"
+        android:label="Modifier le profil"
+        tools:layout="@layout/fragment_edit_profile" />
 </navigation>

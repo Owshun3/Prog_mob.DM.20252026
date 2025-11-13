@@ -76,7 +76,6 @@ public class EntrainementDetailFragment extends Fragment {
             NavHostFragment.findNavController(this).navigateUp();
         } else {
             Toast.makeText(requireContext(), "Erreur lors de la mise à jour", Toast.LENGTH_SHORT).show();
-        }
+        }*/
     }
-    */
 }

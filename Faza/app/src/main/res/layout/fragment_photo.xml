@@ -1,5 +1,4 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="center"
     android:padding="32dp"
@@ -10,22 +9,28 @@
         android:id="@+id/img_photo"
         android:layout_width="200dp"
         android:layout_height="200dp"
+        android:background="@drawable/circle_bg"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_person"/>
+        android:src="@drawable/ic_person" />
 
     <Button
         android:id="@+id/btn_photo"
         android:text="Prendre une photo"
-        android:layout_marginTop="24dp"
-        android:backgroundTint="#784CDEE6"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp" />
+
+    <Button
+        android:id="@+id/btn_galerie"
+        android:text="Choisir depuis la galerie"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp" />
 
     <Button
         android:id="@+id/btn_terminer"
         android:text="Terminer"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="#784CDEE6"
+        android:layout_marginTop="24dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </LinearLayout>

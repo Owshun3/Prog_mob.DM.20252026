@@ -14,6 +14,10 @@ public class OnboardingData {
     private Date date_naissance;
     private float poids;
     private int taille;
+    private String photoUri;
+
+    public String getPhotoUri() { return photoUri; }
+    public void setPhotoUri(String photoUri) { this.photoUri = photoUri; }
 
     public String getGenre() { return genre; }
     public void setGenre(String genre) { this.genre = genre; }

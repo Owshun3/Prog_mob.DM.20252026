@@ -15,14 +15,12 @@
     <Button
         android:id="@+id/btn_homme"
         android:text="Homme"
-        android:backgroundTint="#784CDEE6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/btn_femme"
         android:text="Femme"
-        android:backgroundTint="#784CDEE6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp" />
