@@ -17,17 +17,11 @@ public class EntrainementAdapter extends RecyclerView.Adapter<EntrainementAdapte
     private final List<Entrainement> entrainements;
     private OnEntrainementClickListener listener;
 
-    public interface OnEntrainementClickListener {
-        void onClick(Entrainement e);
-    }
-
+    public interface OnEntrainementClickListener { void onClick(Entrainement e);}
     public void setOnEntrainementClickListener(OnEntrainementClickListener l) {
         this.listener = l;
     }
-
-    public EntrainementAdapter(List<Entrainement> entrainements) {
-        this.entrainements = entrainements;
-    }
+    public EntrainementAdapter(List<Entrainement> entrainements) {this.entrainements = entrainements;}
 
     @NonNull
     @Override
@@ -41,14 +35,9 @@ public class EntrainementAdapter extends RecyclerView.Adapter<EntrainementAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Entrainement e = entrainements.get(position);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
-        holder.txtDate.setText(sdf.format(e.getDateSeance()));
+        holder.txtDate.setText(e.getDateSeance());
 
-        holder.txtInfos.setText(
-                e.getProgramme().getNom() + " • " +
-                        e.getProgramme().getExercices().size() + " exos • " +
-                        e.getProgramme().getNbSeries() + " séries"
-        );
+        holder.txtInfos.setText(e.getDureeMin() + " min");
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onClick(e);

@@ -192,8 +192,10 @@ public class EditProfileFragment extends Fragment {
         user.setTheme(theme);
 
         if (user.getTheme().equals("sombre")) {
+            Log.d("TEST_THEME2", "Theme depuis base = " + user.getTheme());
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         } else {
+            Log.d("TEST_THEME3", "Theme depuis base = " + user.getTheme());
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
         requireActivity().recreate();

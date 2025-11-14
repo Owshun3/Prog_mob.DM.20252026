@@ -27,7 +27,7 @@ public class Entrainement{
     public Entrainement() {
         this.photoFin = "";
     }
-/*
+
     public static List<Entrainement> getAll(Context context) {
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -48,11 +48,10 @@ public class Entrainement{
             cursor.close();
         }
 
-        db.close();
         return list;
     }
 
-    public static Entrainement getById(Context context, long id) {
+    /*public static Entrainement getById(Context context, long id) {
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 

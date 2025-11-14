@@ -4,27 +4,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.faza.data.entites.Entrainement;
-import com.example.faza.ui.Onboarding.*;
 import com.example.faza.R;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
 public class EntrainementFragment extends Fragment {
     private TabLayout tabLayout;
@@ -61,12 +49,10 @@ public class EntrainementFragment extends Fragment {
             public void handleOnBackPressed() {
                 if (getChildFragmentManager().getBackStackEntryCount() > 0) {
                     getChildFragmentManager().popBackStack();
-                    View root = getView();
-                    if (root != null) {
-                        root.findViewById(R.id.containerFragmentFullScreenEntrainement).setVisibility(View.GONE);
-                        root.findViewById(R.id.viewPagerEntrainement).setVisibility(View.VISIBLE);
-                        root.findViewById(R.id.tabLayoutEntrainement).setVisibility(View.VISIBLE);
-                    }
+                    View container = getView().findViewById(R.id.containerFragmentFullScreenEntrainement);
+                    container.setVisibility(View.GONE);
+                    viewPager.setVisibility(View.VISIBLE);
+                    tabLayout.setVisibility(View.VISIBLE);
                 } else {
                     setEnabled(false);
                     requireActivity().onBackPressed();
@@ -80,12 +66,12 @@ public class EntrainementFragment extends Fragment {
         if (root == null) return;
 
         View container = root.findViewById(R.id.containerFragmentFullScreenEntrainement);
-        View viewPager = root.findViewById(R.id.viewPagerEntrainement);
-        View tabLayout = root.findViewById(R.id.tabLayoutEntrainement);
+        View pager = root.findViewById(R.id.viewPagerEntrainement);
+        View tabs = root.findViewById(R.id.tabLayoutEntrainement);
 
         container.setVisibility(View.VISIBLE);
-        viewPager.setVisibility(View.GONE);
-        tabLayout.setVisibility(View.GONE);
+        pager.setVisibility(View.GONE);
+        tabs.setVisibility(View.GONE);
 
         getChildFragmentManager()
                 .beginTransaction()

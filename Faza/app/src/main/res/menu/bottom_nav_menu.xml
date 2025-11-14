@@ -8,6 +8,7 @@
 
     <item
         android:id="@+id/navigation_entrainement"
+        android:icon="@drawable/ic_ares_helmet"
         android:title="Entrainement" />
 
     <item
