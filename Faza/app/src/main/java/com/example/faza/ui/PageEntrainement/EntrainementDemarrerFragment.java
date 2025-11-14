@@ -15,11 +15,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.faza.R;
+import com.example.faza.data.managers.ManagerGlobal;
 
 public class EntrainementDemarrerFragment extends Fragment {
     private Button btnCommencer;
     private RecyclerView recyclerProgrammes;
-
+    private ManagerGlobal manager = ManagerGlobal.getInstance();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

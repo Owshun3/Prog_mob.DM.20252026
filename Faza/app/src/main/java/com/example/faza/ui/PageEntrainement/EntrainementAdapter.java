@@ -8,49 +8,59 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.faza.R;
 import com.example.faza.data.entites.Entrainement;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class EntrainementAdapter extends RecyclerView.Adapter<EntrainementAdapter.ViewHolder> {
 
     private final List<Entrainement> entrainements;
-    private OnItemClickListener listener;
+    private OnEntrainementClickListener listener;
 
-    public interface OnItemClickListener { void onItemClick(Entrainement entrainement);}
-    public void setOnItemClickListener(OnItemClickListener listener) {this.listener = listener;}
-    public EntrainementAdapter(List<Entrainement> entrainements) {this.entrainements = entrainements;}
+    public interface OnEntrainementClickListener {
+        void onClick(Entrainement e);
+    }
+
+    public void setOnEntrainementClickListener(OnEntrainementClickListener l) {
+        this.listener = l;
+    }
+
+    public EntrainementAdapter(List<Entrainement> entrainements) {
+        this.entrainements = entrainements;
+    }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
+        View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_entrainement, parent, false);
-        return new ViewHolder(view);
+        return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Entrainement e = entrainements.get(position);
 
-        holder.txtDate.setText(e.getDateSeance() != null ? e.getDateSeance() : "Date inconnue");
-        /*
-        String infos = "Durée : " + e.getDureeMin() + " min";
-        if (e.getProgramme().getNbSeries() > 0) infos += " | Séries : " + e.getNbSeries();
-        if (e.getChargeTotale() > 0) infos += " | Charge : " + e.getChargeTotale() + " kg";
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+        holder.txtDate.setText(sdf.format(e.getDateSeance()));
 
-        holder.txtInfos.setText(infos);
+        holder.txtInfos.setText(
+                e.getProgramme().getNom() + " • " +
+                        e.getProgramme().getExercices().size() + " exos • " +
+                        e.getProgramme().getNbSeries() + " séries"
+        );
 
         holder.itemView.setOnClickListener(v -> {
-            if (listener != null) listener.onItemClick(e);
+            if (listener != null) listener.onClick(e);
         });
-        */
     }
 
     @Override
     public int getItemCount() {
-        return entrainements != null ? entrainements.size() : 0;
+        return entrainements.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         TextView txtDate, txtInfos;
 
         public ViewHolder(@NonNull View itemView) {
