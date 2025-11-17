@@ -1,21 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
+    android:padding="12dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/btnCommencer"
+        android:id="@+id/btnDemarrerVierge"
+        android:text="Démarrer entraînement vierge"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Commencer un entrainement" />
-
+        android:layout_height="wrap_content"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerProgrammes"
+        android:id="@+id/recyclerProgrammesDemarrer"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingTop="16dp"/>
+        android:layout_height="match_parent"/>
 </LinearLayout>

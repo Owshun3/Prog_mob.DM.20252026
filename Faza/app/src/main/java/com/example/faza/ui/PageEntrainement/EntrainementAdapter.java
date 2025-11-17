@@ -1,61 +1,97 @@
 package com.example.faza.ui.PageEntrainement;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.faza.R;
 import com.example.faza.data.entites.Entrainement;
-import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.Locale;
 
-public class EntrainementAdapter extends RecyclerView.Adapter<EntrainementAdapter.ViewHolder> {
+import java.util.List;
+
+
+public class EntrainementAdapter
+        extends RecyclerView.Adapter<EntrainementAdapter.ViewHolder>
+        implements ModeAffichableAdapter {
 
     private final List<Entrainement> entrainements;
-    private OnEntrainementClickListener listener;
+    private ModeAffichage mode;
+    private final OnDeleteListener deleteListener;
+    private final OnClickListener clickListener;
 
-    public interface OnEntrainementClickListener { void onClick(Entrainement e);}
-    public void setOnEntrainementClickListener(OnEntrainementClickListener l) {
-        this.listener = l;
+    public interface OnDeleteListener {
+        void onDelete(Entrainement e, int position);
     }
-    public EntrainementAdapter(List<Entrainement> entrainements) {this.entrainements = entrainements;}
 
-    @NonNull
-    @Override
+    public interface OnClickListener {
+        void onClick(Entrainement e);
+    }
+
+    public EntrainementAdapter(List<Entrainement> entrainements,
+                               ModeAffichage mode,
+                               OnDeleteListener delListener,
+                               OnClickListener clickListener) {
+        this.entrainements = entrainements;
+        this.mode = mode;
+        this.deleteListener = delListener;
+        this.clickListener = clickListener;
+    }
+
+    @Override public ModeAffichage getMode() { return mode; }
+    @Override public void setMode(ModeAffichage mode) { this.mode = mode; notifyDataSetChanged(); }
+
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_entrainement, parent, false);
+        int layout = (mode == ModeAffichage.READ_ONLY)
+                ? R.layout.item_entrainement
+                : R.layout.item_entrainement_edit;
+        View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
         return new ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Entrainement e = entrainements.get(position);
+    public void onBindViewHolder(@NonNull ViewHolder h, int pos) {
+        Entrainement e = entrainements.get(pos);
 
-        holder.txtDate.setText(e.getDateSeance());
+        if (mode == ModeAffichage.READ_ONLY) {
+            h.txtDate.setText(e.getDateSeance().toString());
+            h.txtInfos.setText(e.getProgramme().getNom());
+            h.itemView.setOnClickListener(v -> clickListener.onClick(e));
+            return;
+        }
 
-        holder.txtInfos.setText(e.getDureeMin() + " min");
+        h.editProgramme.setText(e.getProgramme().getNom());
+        h.editDate.setText(e.getDateSeance().toString());
 
-        holder.itemView.setOnClickListener(v -> {
-            if (listener != null) listener.onClick(e);
+        h.btnDelete.setOnClickListener(v -> {
+            if (deleteListener != null)
+                deleteListener.onDelete(e, pos);
         });
     }
 
     @Override
-    public int getItemCount() {
-        return entrainements.size();
-    }
+    public int getItemCount() { return entrainements.size(); }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
+
         TextView txtDate, txtInfos;
 
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            txtDate = itemView.findViewById(R.id.txtDate);
-            txtInfos = itemView.findViewById(R.id.txtInfos);
+        EditText editProgramme, editDate;
+        Button btnDelete;
+
+        ViewHolder(View v) {
+            super(v);
+
+            txtDate = v.findViewById(R.id.txtDate);
+            txtInfos = v.findViewById(R.id.txtInfos);
+
+            editProgramme = v.findViewById(R.id.editNomProgrammeAssocie);
+            editDate = v.findViewById(R.id.editDateEntrainement);
+            btnDelete = v.findViewById(R.id.btnSupprimerEntrainement);
         }
     }
 }

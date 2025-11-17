@@ -18,53 +18,45 @@ import com.example.faza.data.managers.ManagerGlobal;
 
 public class ProgrammeDetailsFragment extends Fragment {
 
-    private static final String ARG_PROGRAMME_ID = "programme_id";
-
+    private static final String ARG_ID = "id_programme";
     private Programme programme;
-    private TextView txtTitreProgramme;
-    private RecyclerView recyclerExercicesProgramme;
+    private TextView txtTitre;
+    private RecyclerView recyclerExercices;
 
-    public static ProgrammeDetailsFragment newInstance(long programmeId) {
-        ProgrammeDetailsFragment fragment = new ProgrammeDetailsFragment();
-        Bundle args = new Bundle();
-        args.putLong(ARG_PROGRAMME_ID, programmeId);
-        fragment.setArguments(args);
-        return fragment;
+    public static ProgrammeDetailsFragment newInstance(long id) {
+        ProgrammeDetailsFragment f = new ProgrammeDetailsFragment();
+        Bundle b = new Bundle();
+        b.putLong(ARG_ID, id);
+        f.setArguments(b);
+        return f;
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle args = getArguments();
-        if (args == null || !args.containsKey(ARG_PROGRAMME_ID)) {
-            throw new IllegalStateException("ProgrammeDetailsFragment : id programme manquant");
-        }
-        long programmeId = args.getLong(ARG_PROGRAMME_ID);
-        programme = ManagerGlobal.getInstance()
-                .getManagerProgramme()
-                .getProgrammeParId(programmeId);
-        if (programme == null) {
-            throw new IllegalStateException("ProgrammeDetailsFragment : programme introuvable pour id=" + programmeId);
-        }
+        long id = getArguments().getLong(ARG_ID);
+        programme = ManagerGlobal.getInstance().getManagerProgramme().getProgrammeParId(id);
     }
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_programme_details, container, false);
 
-        View view = inflater.inflate(R.layout.fragment_programme_details, container, false);
+        txtTitre = v.findViewById(R.id.txtTitreProgramme);
+        recyclerExercices = v.findViewById(R.id.recyclerExercicesProgramme);
 
-        txtTitreProgramme = view.findViewById(R.id.txtTitreProgramme);
-        recyclerExercicesProgramme = view.findViewById(R.id.recyclerExercicesProgramme);
+        txtTitre.setText(programme.getNom());
+        recyclerExercices.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        txtTitreProgramme.setText(programme.getNom());
+        ExerciceAdapter adapter = new ExerciceAdapter(
+                programme.getExercices(),
+                ModeAffichage.READ_ONLY,
+                null
+        );
 
-        ExerciceAdapter exerciceAdapter = new ExerciceAdapter(programme.getExercices());
-        recyclerExercicesProgramme.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerExercicesProgramme.setAdapter(exerciceAdapter);
+        recyclerExercices.setAdapter(adapter);
 
-        return view;
+        return v;
     }
 }
+
