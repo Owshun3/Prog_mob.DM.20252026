@@ -1,71 +1,72 @@
 package com.example.faza.ui.PageEntrainement;
+
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.faza.R;
 import com.example.faza.data.entites.Serie;
+
 import java.util.List;
-public class SerieAdapter
-        extends RecyclerView.Adapter<SerieAdapter.ViewHolder>
-        implements ModeAffichableAdapter {
+
+public class SerieAdapter extends RecyclerView.Adapter<SerieAdapter.ViewHolder> {
+
+    public interface OnSerieDeleteListener {
+        void onDelete(Serie s, int position);
+    }
 
     private final List<Serie> series;
-    private ModeAffichage mode;
-    private final OnDeleteListener deleteListener;
+    private final boolean editable;
+    private final OnSerieDeleteListener deleteListener;
 
-    public interface OnDeleteListener {
-        void onDelete(Serie serie, int position);
-    }
-
-    public SerieAdapter(List<Serie> series, ModeAffichage mode,
-                        OnDeleteListener listener) {
+    public SerieAdapter(List<Serie> series, boolean editable, OnSerieDeleteListener deleteListener) {
         this.series = series;
-        this.mode = mode;
-        this.deleteListener = listener;
+        this.editable = editable;
+        this.deleteListener = deleteListener;
     }
-
-    @Override public ModeAffichage getMode() { return mode; }
-    @Override public void setMode(ModeAffichage mode) { this.mode = mode; notifyDataSetChanged(); }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        int layout = (mode == ModeAffichage.EDIT)
-                ? R.layout.item_serie_edit
-                : R.layout.item_serie;
-        View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
+    public SerieAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_serie, parent, false);
         return new ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder h, int pos) {
+    public void onBindViewHolder(@NonNull SerieAdapter.ViewHolder h, int pos) {
         Serie s = series.get(pos);
-
-        if (mode == ModeAffichage.READ_ONLY) {
-            h.txtPoids.setText(s.getPoids() + " kg");
-            h.txtReps.setText(s.getRepetitions() + " reps");
-            return;
-        }
 
         h.editPoids.setText(String.valueOf(s.getPoids()));
         h.editReps.setText(String.valueOf(s.getRepetitions()));
+        h.editRir.setText(String.valueOf(s.getRir()));
 
-        h.editPoids.addTextChangedListener(new SimpleTextWatcher(
-                t -> s.setPoids(t.isEmpty() ? 0 : Double.parseDouble(t))
-        ));
+        h.editPoids.setEnabled(editable);
+        h.editReps.setEnabled(editable);
+        h.editRir.setEnabled(editable);
 
-        h.editReps.addTextChangedListener(new SimpleTextWatcher(
-                t -> s.setRepetitions(t.isEmpty() ? 0 : Integer.parseInt(t))
-        ));
+        h.btnDelete.setVisibility(editable ? View.VISIBLE : View.GONE);
 
-        h.btnDel.setOnClickListener(v -> {
-            if (deleteListener != null)
-                deleteListener.onDelete(s, h.getBindingAdapterPosition());
+        h.editPoids.addTextChangedListener(new SimpleTextWatcher(text -> {
+            try { s.setPoids(Double.parseDouble(text)); } catch (Exception ignored) {}
+        }));
+
+        h.editReps.addTextChangedListener(new SimpleTextWatcher(text -> {
+            try { s.setRepetitions(Integer.parseInt(text)); } catch (Exception ignored) {}
+        }));
+
+        h.editRir.addTextChangedListener(new SimpleTextWatcher(text -> {
+            try { s.setRir(Integer.parseInt(text)); } catch (Exception ignored) {}
+        }));
+
+        h.btnDelete.setOnClickListener(v -> {
+            if (deleteListener != null) deleteListener.onDelete(s, pos);
         });
     }
 
@@ -75,18 +76,15 @@ public class SerieAdapter
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView txtPoids, txtReps;
-        EditText editPoids, editReps;
-        Button btnDel;
+        EditText editPoids, editReps, editRir;
+        Button btnDelete;
 
         ViewHolder(View v) {
             super(v);
-            txtPoids = v.findViewById(R.id.txtPoids);
-            txtReps = v.findViewById(R.id.txtReps);
-
             editPoids = v.findViewById(R.id.editPoids);
             editReps = v.findViewById(R.id.editReps);
-            btnDel = v.findViewById(R.id.btnSupprimerSerie);
+            editRir = v.findViewById(R.id.editRir);
+            btnDelete = v.findViewById(R.id.btnDeleteSerie);
         }
     }
 }

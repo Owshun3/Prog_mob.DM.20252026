@@ -25,7 +25,7 @@ public class ManagerProgramme {
         return programmes.remove(p);
     }
 
-    public Programme getProgrammeParId(long id) {
+    public Programme getProgrammeById(long id) {
         for (Programme p : programmes) {
             if (p.getId() == id) return p;
         }

@@ -36,7 +36,7 @@ public class ManagerSerie {
         return null;
     }
 
-    public void modifierSerieParId(long id, Serie nouvelle) {
+    public void modifierSerieById(long id, Serie nouvelle) {
         for (int i = 0; i < series.size(); i++) {
             if (series.get(i).getId() == id) {
                 series.set(i, nouvelle);

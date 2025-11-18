@@ -8,57 +8,80 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.faza.R;
+import com.example.faza.data.entites.Entrainement;
 import com.example.faza.data.entites.Exercice;
 import com.example.faza.data.entites.Programme;
 import com.example.faza.data.managers.ManagerGlobal;
 
 public class ProgrammeEditorFragment extends Fragment {
 
-    private static final String ARG_ID = "id";
+    private static final String ARG_PROGRAMME_ID = "programme_id";
     private static final String ARG_MODE = "mode";
+    private static final String ARG_ENTRAINEMENT_ID = "entrainement_id";
+
+    private ProgrammeEditorMode mode;
     private Programme programme;
-    private ModeAffichage mode;
+    private Entrainement entrainement;
 
-    private EditText editNom;
     private TextView txtNom;
-    private Button btnEdit, btnSave, btnDelete, btnAddEx;
-    private RecyclerView recycler;
+    private EditText editNom;
+    private Button btnModifier;
+    private Button btnEnregistrer;
+    private Button btnSupprimer;
+    private Button btnAjouterExercice;
+    private RecyclerView recyclerExercices;
 
-    public static ProgrammeEditorFragment newInstance(long id, ModeAffichage mode) {
+    private ExerciceAdapter exerciceAdapter;
+
+    public static ProgrammeEditorFragment newInstanceForLibrary(long programmeId, ProgrammeEditorMode mode) {
         Bundle b = new Bundle();
-        b.putLong(ARG_ID, id);
+        b.putLong(ARG_PROGRAMME_ID, programmeId);
         b.putString(ARG_MODE, mode.name());
         ProgrammeEditorFragment f = new ProgrammeEditorFragment();
         f.setArguments(b);
         return f;
     }
 
-    @Override
-    public void onCreate(Bundle s) {
-        super.onCreate(s);
-        long id = getArguments().getLong(ARG_ID);
-        programme = ManagerGlobal.getInstance().getManagerProgramme().getProgrammeParId(id);
-        mode = ModeAffichage.valueOf(getArguments().getString(ARG_MODE));
+    public static ProgrammeEditorFragment newInstanceForTraining(long entrainementId) {
+        Bundle b = new Bundle();
+        b.putLong(ARG_ENTRAINEMENT_ID, entrainementId);
+        b.putString(ARG_MODE, ProgrammeEditorMode.EDIT_TRAINING.name());
+        ProgrammeEditorFragment f = new ProgrammeEditorFragment();
+        f.setArguments(b);
+        return f;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_programme_editor, container, false);
 
-        editNom = v.findViewById(R.id.editNomProgramme);
         txtNom = v.findViewById(R.id.txtNomProgramme);
-        btnEdit = v.findViewById(R.id.btnModifier);
-        btnSave = v.findViewById(R.id.btnEnregistrerProgramme);
-        btnDelete = v.findViewById(R.id.btnSupprimerProgramme);
-        btnAddEx = v.findViewById(R.id.btnAjouterExerciceProgramme);
-        recycler = v.findViewById(R.id.recyclerExercicesEditor);
+        editNom = v.findViewById(R.id.editNomProgramme);
+        btnModifier = v.findViewById(R.id.btnModifier);
+        btnEnregistrer = v.findViewById(R.id.btnEnregistrerProgramme);
+        btnSupprimer = v.findViewById(R.id.btnSupprimerProgramme);
+        btnAjouterExercice = v.findViewById(R.id.btnAjouterExerciceProgramme);
+        recyclerExercices = v.findViewById(R.id.recyclerExercicesEditor);
 
-        recycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        Bundle args = getArguments();
+        mode = ProgrammeEditorMode.valueOf(args.getString(ARG_MODE));
+
+        if (mode == ProgrammeEditorMode.EDIT_TRAINING) {
+            long eId = args.getLong(ARG_ENTRAINEMENT_ID);
+            entrainement = ManagerGlobal.getInstance().getManagerEntrainement().getById(eId);
+            programme = entrainement.getProgramme();
+        } else {
+            long pId = args.getLong(ARG_PROGRAMME_ID);
+            programme = ManagerGlobal.getInstance().getManagerProgramme().getProgrammeById(pId);
+        }
+
+        recyclerExercices.setLayoutManager(new LinearLayoutManager(getContext()));
 
         appliquerMode();
 
@@ -66,62 +89,86 @@ public class ProgrammeEditorFragment extends Fragment {
     }
 
     private void appliquerMode() {
-        if (mode == ModeAffichage.READ_ONLY) {
-            txtNom.setText(programme.getNom());
-            editNom.setVisibility(View.GONE);
+        if (mode == ProgrammeEditorMode.READ_ONLY) {
             txtNom.setVisibility(View.VISIBLE);
-            btnEdit.setVisibility(View.VISIBLE);
-            btnSave.setVisibility(View.GONE);
-            btnDelete.setVisibility(View.GONE);
-            btnAddEx.setVisibility(View.GONE);
+            editNom.setVisibility(View.GONE);
+            btnModifier.setVisibility(View.VISIBLE);
+            btnEnregistrer.setVisibility(View.GONE);
+            btnSupprimer.setVisibility(View.GONE);
+            btnAjouterExercice.setVisibility(View.GONE);
 
-            ExerciceAdapter adapter = new ExerciceAdapter(
+            txtNom.setText(getNomSafe());
+
+            exerciceAdapter = new ExerciceAdapter(
                     programme.getExercices(),
-                    ModeAffichage.READ_ONLY,
+                    false,
                     null
             );
-            recycler.setAdapter(adapter);
 
-            btnEdit.setOnClickListener(v -> changerMode(ModeAffichage.EDIT));
+            recyclerExercices.setAdapter(exerciceAdapter);
+
+            btnModifier.setOnClickListener(x -> changerMode(ProgrammeEditorMode.EDIT_LIBRARY));
             return;
         }
 
         txtNom.setVisibility(View.GONE);
         editNom.setVisibility(View.VISIBLE);
-        editNom.setText(programme.getNom());
-        editNom.addTextChangedListener(new SimpleTextWatcher(t -> programme.setNom(t)));
+        editNom.setText(getNomSafe());
 
-        btnEdit.setVisibility(View.GONE);
-        btnSave.setVisibility(View.VISIBLE);
-        btnDelete.setVisibility(View.VISIBLE);
-        btnAddEx.setVisibility(View.VISIBLE);
+        editNom.addTextChangedListener(new SimpleTextWatcher(programme::setNom));
 
-        ExerciceAdapter adapter = new ExerciceAdapter(
+        btnModifier.setVisibility(View.GONE);
+        btnEnregistrer.setVisibility(View.VISIBLE);
+        btnAjouterExercice.setVisibility(View.VISIBLE);
+
+        if (mode == ProgrammeEditorMode.EDIT_LIBRARY) {
+            btnSupprimer.setVisibility(View.VISIBLE);
+        } else {
+            btnSupprimer.setVisibility(View.GONE);
+        }
+
+        exerciceAdapter = new ExerciceAdapter(
                 programme.getExercices(),
-                ModeAffichage.EDIT,
+                true,
                 (ex, pos) -> {
                     programme.getExercices().remove(pos);
-                    recycler.getAdapter().notifyItemRemoved(pos);
+                    exerciceAdapter.notifyItemRemoved(pos);
                 }
         );
-        recycler.setAdapter(adapter);
+        recyclerExercices.setAdapter(exerciceAdapter);
 
-        btnAddEx.setOnClickListener(x -> {
+        btnAjouterExercice.setOnClickListener(v -> {
             Exercice e = new Exercice("Nouvel exercice");
             programme.ajouterExercice(e);
-            recycler.getAdapter().notifyItemInserted(programme.getExercices().size() - 1);
+            exerciceAdapter.notifyItemInserted(programme.getExercices().size() - 1);
         });
 
-        btnSave.setOnClickListener(x -> requireActivity().getSupportFragmentManager().popBackStack());
+        btnEnregistrer.setOnClickListener(v -> fermer());
 
-        btnDelete.setOnClickListener(x -> {
-            ManagerGlobal.getInstance().getManagerProgramme().supprimerProgramme(programme);
-            requireActivity().getSupportFragmentManager().popBackStack();
-        });
+        if (mode == ProgrammeEditorMode.EDIT_LIBRARY) {
+            btnSupprimer.setOnClickListener(v -> {
+                ManagerGlobal.getInstance().getManagerProgramme().supprimerProgramme(progSafe());
+                fermer();
+            });
+        }
     }
 
-    private void changerMode(ModeAffichage m) {
-        mode = m;
+    private void changerMode(ProgrammeEditorMode newMode) {
+        this.mode = newMode;
         appliquerMode();
+    }
+
+    private String getNomSafe() {
+        return programme != null && programme.getNom() != null ? programme.getNom() : "";
+    }
+
+    private Programme progSafe() {
+        return programme;
+    }
+
+    private void fermer() {
+        requireActivity().getSupportFragmentManager().popBackStack();
+        View fullscreen = requireActivity().findViewById(R.id.containerFragmentFullScreenEntrainement);
+        fullscreen.setVisibility(View.GONE);
     }
 }

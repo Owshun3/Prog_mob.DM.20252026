@@ -1,11 +1,30 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:padding="12dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/txtNomExercice"
-        android:textSize="18sp"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/editNomExercice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nom exercice"/>
+
+    <Button
+        android:id="@+id/btnSupprimerExercice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Supprimer exercice"
+        android:textColor="@android:color/holo_red_dark"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerSeries"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btnAjouterSerie"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ajouter série"/>
 </LinearLayout>

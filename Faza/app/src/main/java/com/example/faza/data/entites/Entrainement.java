@@ -25,6 +25,7 @@ public class Entrainement{
     }
 
     public Entrainement() {
+        this.programme = new Programme();
         this.photoFin = "";
     }
 

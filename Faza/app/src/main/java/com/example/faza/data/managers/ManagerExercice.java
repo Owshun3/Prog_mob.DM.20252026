@@ -36,7 +36,7 @@ public class ManagerExercice {
         return null;
     }
 
-    public void modifierExerciceParId(long id, Exercice nouveau) {
+    public void modifierExerciceById(long id, Exercice nouveau) {
         for (int i = 0; i < exercices.size(); i++) {
             if (exercices.get(i).getId() == id) {
                 exercices.set(i, nouveau);
