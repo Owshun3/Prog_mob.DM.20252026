@@ -56,6 +56,8 @@ public class EntrainementDemarrerFragment extends Fragment {
     }
 
     private void ouvrirEntrainementEnCours(long id) {
+        requireActivity().findViewById(R.id.containerFragmentFullScreenEntrainement)
+                .setVisibility(View.VISIBLE);
         Fragment f = EntrainementEnCoursFragment.newInstance(id);
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -47,6 +48,9 @@ public class EntrainementBibliothequeFragment extends Fragment {
     }
 
     private void ouvrirProgramme(long id, ModeAffichage mode) {
+        requireActivity().findViewById(R.id.containerFragmentFullScreenEntrainement)
+                .setVisibility(View.VISIBLE);
+
         Fragment f = ProgrammeEditorFragment.newInstance(id, mode);
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
