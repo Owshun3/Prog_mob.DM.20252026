@@ -65,7 +65,7 @@ public class EntrainementEnCoursFragment extends Fragment {
         startChrono();
 
         btnTerminer.setOnClickListener(x -> {
-            requireActivity().getSupportFragmentManager().popBackStack();
+            getParentFragmentManager().popBackStack();
             View full = requireActivity().findViewById(R.id.containerFragmentFullScreenEntrainement);
             full.setVisibility(View.GONE);
         });

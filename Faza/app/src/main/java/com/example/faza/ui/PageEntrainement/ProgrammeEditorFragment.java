@@ -143,7 +143,24 @@ public class ProgrammeEditorFragment extends Fragment {
             exerciceAdapter.notifyItemInserted(programme.getExercices().size() - 1);
         });
 
-        btnEnregistrer.setOnClickListener(v -> fermer());
+        btnEnregistrer.setOnClickListener(v -> {        //TODO : sauvegarder les entrainements (correctement)
+            String nom = editNom.getText().toString().trim();
+
+            if (nom.isEmpty()) {
+                editNom.setError("Le nom ne peut pas être vide");
+                return;
+            }
+            if (nomExisteDeja(nom)) {
+                editNom.setError("Un programme existe déjà avec ce nom");
+                return;
+            }
+
+            ManagerGlobal.getInstance().getManagerProgramme().sauvegarderProgramme(programme);
+            //ManagerGlobal.getInstance().getManagerEntrainement().sauvegarderEntrainement(requireContext(),e);
+            programme.setNom(nom);
+            fermer();
+        });
+
 
         if (mode == ProgrammeEditorMode.EDIT_LIBRARY) {
             btnSupprimer.setOnClickListener(v -> {
@@ -167,8 +184,18 @@ public class ProgrammeEditorFragment extends Fragment {
     }
 
     private void fermer() {
-        requireActivity().getSupportFragmentManager().popBackStack();
+        getParentFragmentManager().popBackStack();
         View fullscreen = requireActivity().findViewById(R.id.containerFragmentFullScreenEntrainement);
         fullscreen.setVisibility(View.GONE);
+    }
+
+    private boolean nomExisteDeja(String nom) {
+        for (Programme p : ManagerGlobal.getInstance().getManagerProgramme().getProgrammes()) {
+            if (p != programme && p.getNom() != null &&
+                    p.getNom().trim().equalsIgnoreCase(nom.trim())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -18,6 +18,7 @@
             android:theme="@style/Theme.Faiza.NoActionBar" />
         <activity
             android:name=".ui.MainActivity"
+            android:configChanges="uiMode|screenSize|orientation"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

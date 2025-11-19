@@ -5,9 +5,7 @@ import android.text.TextWatcher;
 
 public class SimpleTextWatcher implements TextWatcher {
 
-    public interface OnTextChanged {
-        void onTextChanged(String text);
-    }
+    public interface OnTextChanged { void onTextChanged(String text);}
 
     private final OnTextChanged listener;
 

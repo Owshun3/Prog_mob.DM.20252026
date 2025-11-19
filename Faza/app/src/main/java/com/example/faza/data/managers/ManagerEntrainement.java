@@ -1,32 +1,98 @@
 package com.example.faza.data.managers;
 
+import android.content.ContentValues;
+import android.content.Context;
+import com.example.faza.data.DBAdapter;
 import com.example.faza.data.entites.Entrainement;
 import com.example.faza.data.entites.Exercice;
 import com.example.faza.data.entites.Programme;
 import com.example.faza.data.entites.Serie;
 
 import java.util.ArrayList;
+
 public class ManagerEntrainement {
 
     private final ArrayList<Entrainement> entrainements = new ArrayList<>();
-    private long nextId = 1;
 
-    public Entrainement creerDepuisProgramme(Programme p) {
+    public Entrainement creerDepuisProgramme(Context ctx, Programme source) {
+        Programme copie = copierProgramme(source);
+        long id = insertEntrainement(ctx);
         Entrainement e = new Entrainement();
-        e.setId(nextId++);
+        e.setId(id);
+        e.setProgramme(copie);
+        entrainements.add(e);
+        return e;
+    }
+
+    public Entrainement creerVierge(Context ctx) {
+        Programme p = new Programme();
+        p.setNom("Entraînement libre");
+        long id = insertEntrainement(ctx);
+        Entrainement e = new Entrainement();
+        e.setId(id);
         e.setProgramme(p);
         entrainements.add(e);
         return e;
     }
 
-    public Entrainement creerVierge() {
-        Entrainement e = new Entrainement();
-        e.setId(nextId++);
-        Programme p = new Programme();
-        p.setNom("Entraînement libre");
-        e.setProgramme(p);
-        entrainements.add(e);
-        return e;
+    private long insertEntrainement(Context ctx) {
+        DBAdapter db = new DBAdapter(ctx).open();
+        ContentValues v = new ContentValues();
+        v.put("id_user", 1);
+        v.put("date_seance", "");
+        v.put("duree_min", 0);
+        v.put("charge_totale", 0);
+        v.put("nb_series", 0);
+        v.put("nb_repetitions", 0);
+        v.put("photo_fin", "");
+        v.put("commentaire", "");
+        long id = db.insert("entrainement", v);
+        db.close();
+        return id;
+    }
+
+    public void sauvegarderEntrainement(Context ctx, Entrainement e) {
+        updateEntrainement(ctx, e);
+        saveExosEtSeries(ctx, e);
+    }
+
+    private void updateEntrainement(Context ctx, Entrainement e) {
+        DBAdapter db = new DBAdapter(ctx).open();
+        ContentValues v = new ContentValues();
+        v.put("date_seance", e.getDateSeance());
+        v.put("duree_min", e.getDureeMin());
+        v.put("photo_fin", e.getPhotoFin());
+        db.update("entrainement", v, e.getId());
+        db.close();
+    }
+
+    private void saveExosEtSeries(Context ctx, Entrainement e) {
+        DBAdapter db = new DBAdapter(ctx).open();
+        long idE = e.getId();
+        db.execSQL("DELETE FROM entrainement_exercice WHERE id_entrainement=" + idE);
+
+        for (Exercice ex : e.getProgramme().getExercices()) {
+            ContentValues vEx = new ContentValues();
+            vEx.put("id_entrainement", idE);
+            vEx.put("id_exercice", ex.getId());
+            vEx.put("ordre", 0);
+            long idEE = db.insert("entrainement_exercice", vEx);
+
+            db.execSQL("DELETE FROM serie WHERE id_entrainement_exercice=" + idEE);
+
+            for (Serie s : ex.getSeries()) {
+                ContentValues vS = new ContentValues();
+                vS.put("id_entrainement_exercice", idEE);
+                vS.put("numero", 0);
+                vS.put("poids", s.getPoids());
+                vS.put("repetitions", s.getRepetitions());
+                vS.put("rir", s.getRir());
+                vS.put("validee", s.isValidee() ? 1 : 0);
+                db.insert("serie", vS);
+            }
+        }
+
+        db.close();
     }
 
     public Entrainement getById(long id) {
@@ -34,34 +100,28 @@ public class ManagerEntrainement {
         return null;
     }
 
-    public ArrayList<Entrainement> getAll() {
-        return entrainements;
-    }
-
-    public void supprimer(Entrainement e) {
-        entrainements.remove(e);
-    }
-
-    private Programme copierProgrammePourEntrainement(Programme source) {
+    private Programme copierProgramme(Programme src) {
         Programme p = new Programme();
-        p.setNom(source.getNom());
-        ArrayList<Exercice> exos = new ArrayList<>();
-        for (Exercice ex : source.getExercices()) {
-            Exercice copieEx = new Exercice();
-            copieEx.setNom(ex.getNom());
-            copieEx.setDescription(ex.getDescription());
-            copieEx.setGroupePrincipal(ex.getGroupePrincipal());
-            copieEx.setGroupeSecondaire(ex.getGroupeSecondaire());
-            copieEx.setSeries(new ArrayList<>());
+        p.setNom(src.getNom());
+        ArrayList<Exercice> exs = new ArrayList<>();
+        for (Exercice ex : src.getExercices()) {
+            Exercice c = new Exercice();
+            c.setId(ex.getId());
+            c.setNom(ex.getNom());
+            c.setDescription(ex.getDescription());
+            c.setGroupePrincipal(ex.getGroupePrincipal());
+            c.setGroupeSecondaire(ex.getGroupeSecondaire());
+            ArrayList<Serie> ss = new ArrayList<>();
             for (Serie s : ex.getSeries()) {
-                Serie copieS = new Serie(s.getPoids(), s.getRepetitions());
-                copieS.setRir(s.getRir());
-                copieS.setValidee(false);
-                copieEx.ajouterSerie(copieS);
+                Serie cs = new Serie(s.getPoids(), s.getRepetitions());
+                cs.setRir(s.getRir());
+                cs.setValidee(false);
+                ss.add(cs);
             }
-            exos.add(copieEx);
+            c.setSeries(ss);
+            exs.add(c);
         }
-        p.setExercices(exos);
+        p.setExercices(exs);
         return p;
     }
 }

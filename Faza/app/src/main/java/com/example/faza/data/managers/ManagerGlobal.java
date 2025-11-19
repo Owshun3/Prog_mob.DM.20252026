@@ -2,12 +2,7 @@ package com.example.faza.data.managers;
 
 import android.content.Context;
 
-import com.example.faza.data.DatabaseHelper;
 import com.example.faza.data.entites.User;
-import com.example.faza.data.entites.Programme;
-import com.example.faza.data.entites.Entrainement;
-
-import java.util.ArrayList;
 
 public class ManagerGlobal {
 
@@ -19,7 +14,7 @@ public class ManagerGlobal {
     private final ManagerSerie managerSerie;
 
     public ManagerGlobal(Context ctx, User u) {
-        managerProgramme = new ManagerProgramme();
+        managerProgramme = new ManagerProgramme(ctx);
         managerEntrainement = new ManagerEntrainement();
         managerExercice = new ManagerExercice();
         managerSerie = new ManagerSerie();

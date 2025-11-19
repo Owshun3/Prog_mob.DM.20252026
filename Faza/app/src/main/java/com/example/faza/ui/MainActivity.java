@@ -37,13 +37,15 @@ public class MainActivity extends AppCompatActivity {
         }
         ManagerGlobal.initialize(this, existingUser);
 
-        if ("sombre".equalsIgnoreCase(existingUser.getTheme())) {
+        if ("sombre".equalsIgnoreCase(existingUser.getTheme())) {       //TODO : régler les changements de thèmes
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
 
         super.onCreate(savedInstanceState);
+
+        ManagerGlobal.initialize(this, existingUser);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -58,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this,
                 R.id.nav_host_fragment_activity_main);
         //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        // pour plus tard
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
 }

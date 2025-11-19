@@ -37,9 +37,9 @@ public class EntrainementBibliothequeFragment extends Fragment {
         recycler.setAdapter(adapter);
 
         btnAjouter.setOnClickListener(x -> {
-            Programme p = new Programme();
-            p.setNom("Nouveau programme");
-            ManagerGlobal.getInstance().getManagerProgramme().ajouterProgramme(p);
+            Programme p = ManagerGlobal.getInstance()
+                    .getManagerProgramme()
+                    .creerProgramme(requireContext(), "Nouveau programme");
             ouvrirProgramme(p.getId(), ProgrammeEditorMode.EDIT_LIBRARY);
         });
 
@@ -52,10 +52,24 @@ public class EntrainementBibliothequeFragment extends Fragment {
 
         Fragment f = ProgrammeEditorFragment.newInstanceForLibrary(id, mode);
 
-        requireActivity().getSupportFragmentManager()
+        getParentFragmentManager()
                 .beginTransaction()
                 .replace(R.id.containerFragmentFullScreenEntrainement, f)
-                .addToBackStack(null)
+                .addToBackStack("programme_editor")
                 .commit();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (recycler != null) {
+            ProgrammeAdapter adapter = new ProgrammeAdapter(
+                    ManagerGlobal.getInstance().getManagerProgramme().getProgrammes(),
+                    p -> ouvrirProgramme(p.getId(), ProgrammeEditorMode.READ_ONLY)
+            );
+
+            recycler.setAdapter(adapter);
+        }
     }
 }

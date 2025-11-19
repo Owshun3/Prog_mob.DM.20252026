@@ -69,4 +69,12 @@ public class DBAdapter {
         c.close();
         return result;
     }
+
+    public void execSQL(String sql) {
+        db.execSQL(sql);
+    }
+
+    public void execSQL(String sql, Object[] bindArgs) {
+        db.execSQL(sql, bindArgs);
+    }
 }

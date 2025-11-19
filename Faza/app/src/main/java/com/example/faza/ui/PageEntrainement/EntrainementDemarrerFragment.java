@@ -16,6 +16,7 @@ import com.example.faza.data.entites.Entrainement;
 import com.example.faza.data.entites.Programme;
 import com.example.faza.data.managers.ManagerGlobal;
 
+//TODO : Gérer les séries
 public class EntrainementDemarrerFragment extends Fragment {
 
     private RecyclerView recycler;
@@ -35,7 +36,7 @@ public class EntrainementDemarrerFragment extends Fragment {
                 p -> {
                     Entrainement e = ManagerGlobal.getInstance()
                             .getManagerEntrainement()
-                            .creerDepuisProgramme(p);
+                            .creerDepuisProgramme(requireContext(),p);
                     ouvrirEntrainementEnCours(e.getId());
                 }
         );
@@ -45,7 +46,7 @@ public class EntrainementDemarrerFragment extends Fragment {
         btnDemarrerVierge.setOnClickListener(x -> {
             Entrainement e = ManagerGlobal.getInstance()
                     .getManagerEntrainement()
-                    .creerVierge();
+                    .creerVierge(requireContext());
             ouvrirEntrainementEnCours(e.getId());
         });
 
@@ -58,7 +59,7 @@ public class EntrainementDemarrerFragment extends Fragment {
 
         Fragment f = EntrainementEnCoursFragment.newInstance(id);
 
-        requireActivity().getSupportFragmentManager()
+        getParentFragmentManager()
                 .beginTransaction()
                 .replace(R.id.containerFragmentFullScreenEntrainement, f)
                 .addToBackStack(null)
