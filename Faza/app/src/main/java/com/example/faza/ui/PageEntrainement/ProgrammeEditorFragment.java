@@ -1,5 +1,4 @@
 package com.example.faza.ui.PageEntrainement;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.faza.R;
 import com.example.faza.data.entites.Entrainement;
-import com.example.faza.data.entites.Exercice;
 import com.example.faza.data.entites.Programme;
 import com.example.faza.data.managers.ManagerGlobal;
+import com.example.faza.ui.PageEntrainement.adapters.ExerciceAdapter;
+import com.example.faza.ui.PageEntrainement.modes.ProgrammeEditorMode;
 
 public class ProgrammeEditorFragment extends Fragment {
 
@@ -75,12 +75,17 @@ public class ProgrammeEditorFragment extends Fragment {
         if (mode == ProgrammeEditorMode.EDIT_TRAINING) {
             long eId = args.getLong(ARG_ENTRAINEMENT_ID);
             entrainement = ManagerGlobal.getInstance().getManagerEntrainement().getById(eId);
-            programme = entrainement.getProgramme();
+            if (entrainement != null) {
+                programme = entrainement.getProgramme();
+                if (programme == null) {
+                    programme = new Programme();
+                    entrainement.setProgramme(programme);
+                }
+            }
         } else {
             long pId = args.getLong(ARG_PROGRAMME_ID);
             programme = ManagerGlobal.getInstance().getManagerProgramme().getProgrammeById(pId);
         }
-
 
         if (programme == null) {
             requireActivity().getSupportFragmentManager().popBackStack();
@@ -94,6 +99,14 @@ public class ProgrammeEditorFragment extends Fragment {
         appliquerMode();
 
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (exerciceAdapter != null) {
+            exerciceAdapter.notifyDataSetChanged();
+        }
     }
 
     private void appliquerMode() {
@@ -112,7 +125,6 @@ public class ProgrammeEditorFragment extends Fragment {
                     false,
                     null
             );
-
             recyclerExercices.setAdapter(exerciceAdapter);
 
             btnModifier.setOnClickListener(x -> changerMode(ProgrammeEditorMode.EDIT_LIBRARY));
@@ -122,7 +134,6 @@ public class ProgrammeEditorFragment extends Fragment {
         txtNom.setVisibility(View.GONE);
         editNom.setVisibility(View.VISIBLE);
         editNom.setText(getNomSafe());
-
         editNom.addTextChangedListener(new SimpleTextWatcher(programme::setNom));
 
         btnModifier.setVisibility(View.GONE);
@@ -145,37 +156,31 @@ public class ProgrammeEditorFragment extends Fragment {
         );
         recyclerExercices.setAdapter(exerciceAdapter);
 
-        btnAjouterExercice.setOnClickListener(v -> {
-            Exercice e = new Exercice("Nouvel exercice");
-            programme.ajouterExercice(e);
-            exerciceAdapter.notifyItemInserted(programme.getExercices().size() - 1);
-        });
+        btnAjouterExercice.setOnClickListener(v -> ouvrirSelectionExercice());
 
-        btnEnregistrer.setOnClickListener(v -> {
-            String nom = editNom.getText().toString().trim();
-
-            if (nom.isEmpty()) {
-                editNom.setError("Le nom ne peut pas être vide");
-                return;
-            }
-            if (nomExisteDeja(nom)) {
-                editNom.setError("Un programme existe déjà avec ce nom");
-                return;
-            }
-
-            ManagerGlobal.getInstance().getManagerProgramme().sauvegarderProgramme(programme);
-            //ManagerGlobal.getInstance().getManagerEntrainement().sauvegarderEntrainement(requireContext(),e);
-            programme.setNom(nom);
-            fermer();
-        });
-
+        btnEnregistrer.setOnClickListener(v -> fermer());
 
         if (mode == ProgrammeEditorMode.EDIT_LIBRARY) {
             btnSupprimer.setOnClickListener(v -> {
-                ManagerGlobal.getInstance().getManagerProgramme().supprimerProgramme(progSafe());
+                ManagerGlobal.getInstance().getManagerProgramme().supprimerProgramme(programme);
                 fermer();
             });
         }
+    }
+
+    private void ouvrirSelectionExercice() {
+        Fragment f;
+        if (mode == ProgrammeEditorMode.EDIT_TRAINING && entrainement != null) {
+            f = SelectionExerciceFragment.newInstanceForEntrainement(entrainement.getId());
+        } else {
+            f = SelectionExerciceFragment.newInstanceForProgramme(programme.getId());
+        }
+
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.containerFragmentFullScreenEntrainement, f)
+                .addToBackStack(null)
+                .commit();
     }
 
     private void changerMode(ProgrammeEditorMode newMode) {
@@ -187,23 +192,9 @@ public class ProgrammeEditorFragment extends Fragment {
         return programme != null && programme.getNom() != null ? programme.getNom() : "";
     }
 
-    private Programme progSafe() {
-        return programme;
-    }
-
     private void fermer() {
-        getParentFragmentManager().popBackStack();
+        requireActivity().getSupportFragmentManager().popBackStack();
         View fullscreen = requireActivity().findViewById(R.id.containerFragmentFullScreenEntrainement);
-        fullscreen.setVisibility(View.GONE);
-    }
-
-    private boolean nomExisteDeja(String nom) {
-        for (Programme p : ManagerGlobal.getInstance().getManagerProgramme().getProgrammes()) {
-            if (p != programme && p.getNom() != null &&
-                    p.getNom().trim().equalsIgnoreCase(nom.trim())) {
-                return true;
-            }
-        }
-        return false;
+        if (fullscreen != null) fullscreen.setVisibility(View.GONE);
     }
 }

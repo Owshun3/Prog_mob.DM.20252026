@@ -3,45 +3,37 @@ package com.example.faza.data.managers;
 import com.example.faza.data.entites.Exercice;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class ManagerExercice {
-    private ArrayList<Exercice> exercices;
 
-    public ManagerExercice() {
-        this.exercices = new ArrayList<>();
+    private final HashMap<String, Exercice> exercices = new HashMap<>();
+
+    public void clear() {
+        exercices.clear();
     }
 
-    public ArrayList<Exercice> getExercices() {
-        return exercices;
-    }
-
-    public void setExercices(ArrayList<Exercice> exercices) {
-        if (exercices == null) throw new IllegalArgumentException("Liste d'exercices nulle");
-        this.exercices = exercices;
-    }
-
-    public void ajouterExercice(Exercice e) {
-        if (e == null) throw new IllegalArgumentException("Exercice nul");
-        exercices.add(e);
-    }
-
-    public boolean supprimerExercice(Exercice e) {
-        return exercices.remove(e);
-    }
-
-    public Exercice getExerciceById(long id) {
-        for (Exercice e : exercices) {
-            if (e.getId() == id) return e;
+    public void ajouterSiAbsent(Exercice e) {
+        if (!exercices.containsKey(e.getNom())) {
+            exercices.put(e.getNom(), e);
         }
-        return null;
     }
 
-    public void modifierExerciceById(long id, Exercice nouveau) {
-        for (int i = 0; i < exercices.size(); i++) {
-            if (exercices.get(i).getId() == id) {
-                exercices.set(i, nouveau);
-                return;
+    public ArrayList<Exercice> getTous() {
+        return new ArrayList<>(exercices.values());
+    }
+
+    public ArrayList<Exercice> rechercher(String texte) {
+        ArrayList<Exercice> res = new ArrayList<>();
+        String t = texte.toLowerCase();
+
+        for (Exercice e : exercices.values()) {
+            if (e.getNom().toLowerCase().contains(t)) {
+                res.add(e);
             }
         }
+        return res;
     }
+
 }

@@ -15,13 +15,13 @@ public class ManagerProgramme {
 
     public ManagerProgramme(Context ctx) {
         this.context = ctx;
-        chargerDepuisBDD();
+        //chargerDepuisBDD();
     }
 
     public ArrayList<Programme> getProgrammes() { return programmes; }
     public void ajouterProgramme(Programme p) { programmes.add(p); }
 
-
+    /*
     private void chargerDepuisBDD() {
         programmes.clear();
 
@@ -29,47 +29,45 @@ public class ManagerProgramme {
         Cursor c = db.getAll("programme");
 
         while (c.moveToNext()) {
-            Programme p = new Programme();
-            p.setId(c.getLong(c.getColumnIndexOrThrow("id")));
-            p.setNom(c.getString(c.getColumnIndexOrThrow("nom")));
-            p.setCommentaire(c.getString(c.getColumnIndexOrThrow("description")));
-
-            chargerExercicesPourProgramme(p);
-
-            programmes.add(p);
-        }
-
-        c.close();
-        db.close();
-    }
-
-    private void chargerExercicesPourProgramme(Programme p) {
-        DBAdapter db = new DBAdapter(context).open();
-
-        Cursor c = db.rawQuery(
-                "SELECT id_exercice FROM programme_exercice WHERE id_programme = ? ORDER BY id",
-                new String[]{String.valueOf(p.getId())}
-        );
-
-        ArrayList<Exercice> liste = new ArrayList<>();
-
-        while (c.moveToNext()) {
             long idEx = c.getLong(0);
 
-            Exercice ex = ManagerGlobal.getInstance()
-                    .getManagerExercice()
-                    .getExerciceById(idEx);
+            Exercice ex = chargerExerciceDepuisBD(idEx);
 
             if (ex != null) {
-                liste.add(ex);
+                //liste.add(ex);
             }
         }
 
+
         c.close();
         db.close();
-
-        p.setExercices(liste);
     }
+
+    private Exercice chargerExerciceDepuisBD(long idEx) {
+        DBAdapter db = new DBAdapter(context).open();
+
+        Cursor c = db.rawQuery(
+                "SELECT nom, groupe_principal, groupe_secondaire, description, url_video, miniature " +
+                        "FROM exercice WHERE id = ?",
+                new String[]{String.valueOf(idEx)}
+        );
+
+        if (!c.moveToFirst()) return null;
+
+        Exercice e = new Exercice();
+        e.setId(idEx);
+        e.setNom(c.getString(0));
+        e.setGroupePrincipal(c.getString(1));
+        e.setGroupeSecondaire(c.getString(2));
+        e.setDescription(c.getString(3));
+        e.setUrlVideo(c.getString(4));
+        e.setMiniature(c.getString(5));
+
+        c.close();
+        db.close();
+        return e;
+    }
+    */
 
     public Programme creerProgramme(Context ctx, String nom) {
         DBAdapter db = new DBAdapter(ctx).open();
@@ -105,7 +103,7 @@ public class ManagerProgramme {
 
     public void sauvegarderProgramme(Programme p) {
         updateProgramme(p);
-        saveExercicesForProgramme(p);
+        //saveExercicesForProgramme(p);
     }
 
     public void updateProgramme(Programme p) {
@@ -119,6 +117,7 @@ public class ManagerProgramme {
         db.close();
     }
 
+    /*
     public void saveExercicesForProgramme(Programme p) {
         DBAdapter db = new DBAdapter(context).open();
         long programmeId = p.getId();
@@ -141,7 +140,7 @@ public class ManagerProgramme {
 
         db.close();
     }
-
+    */
     public Programme getProgrammeById(long id) {
         for (Programme p : programmes) {
             if (p.getId() == id) return p;

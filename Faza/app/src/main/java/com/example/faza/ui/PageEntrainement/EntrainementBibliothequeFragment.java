@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.faza.R;
 import com.example.faza.data.entites.Programme;
 import com.example.faza.data.managers.ManagerGlobal;
+import com.example.faza.ui.PageEntrainement.adapters.ProgrammeAdapter;
+import com.example.faza.ui.PageEntrainement.modes.ProgrammeEditorMode;
 
 public class EntrainementBibliothequeFragment extends Fragment {
     private ProgrammeAdapter adapter;

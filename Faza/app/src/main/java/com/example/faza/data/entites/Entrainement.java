@@ -10,6 +10,8 @@ import java.util.List;
 
 public class Entrainement{
     private long id;
+    private String nom;
+    private String dateTexte;
     private String dateSeance;
     private int dureeMin;
     private String photoFin;
@@ -82,7 +84,11 @@ public class Entrainement{
     public void setId(long id){this.id = id;}
     public String getDateSeance() { return dateSeance; }
     public void setDateSeance(String dateSeance) { this.dateSeance = dateSeance; }
+    public void setNom(String n) { this.nom = n; }
+    public String getNom() { return nom; }
 
+    public void setDateTexte(String d) { this.dateTexte = d; }
+    public String getDateTexte() { return dateTexte; }
     public int getDureeMin() { return dureeMin; }
     public void setDureeMin(int dureeMin) { this.dureeMin = dureeMin; }
     public String getPhotoFin() { return photoFin; }

@@ -2,7 +2,14 @@ package com.example.faza.data.managers;
 
 import android.content.Context;
 
+import com.example.faza.data.Service.ExerciceCsvLoader;
+import com.example.faza.data.entites.Exercice;
 import com.example.faza.data.entites.User;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.List;
 
 public class ManagerGlobal {
 
@@ -18,10 +25,37 @@ public class ManagerGlobal {
         managerEntrainement = new ManagerEntrainement();
         managerExercice = new ManagerExercice();
         managerSerie = new ManagerSerie();
+        chargerExercicesDepuisCSV(ctx);
     }
 
     public static void initialize(Context ctx, User u) {
         if (instance == null) instance = new ManagerGlobal(ctx, u);
+    }
+
+    private void chargerExercicesDepuisCSV(Context ctx) {
+        try {
+            InputStream is = ctx.getAssets().open("exercices.csv");
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
+            String line = br.readLine();
+
+            while ((line = br.readLine()) != null) {
+                String[] cols = line.split(",");
+
+                if (cols.length < 4) continue;
+
+                String nomExercice = cols[3].replace("\"", "").trim();
+                if (nomExercice.isEmpty()) continue;
+
+                Exercice e = new Exercice();
+                ManagerExercice mgr = getManagerExercice();
+                mgr.ajouterSiAbsent(e);
+            }
+
+            br.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public static ManagerGlobal getInstance() {

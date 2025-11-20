@@ -1,6 +1,5 @@
-package com.example.faza.ui.PageEntrainement;
+package com.example.faza.ui.PageEntrainement.adapters;
 
-import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.faza.R;
 import com.example.faza.data.entites.Serie;
+import com.example.faza.ui.PageEntrainement.SimpleTextWatcher;
 
 import java.util.List;
 

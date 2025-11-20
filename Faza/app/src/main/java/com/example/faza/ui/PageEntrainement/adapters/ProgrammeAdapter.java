@@ -1,4 +1,4 @@
-package com.example.faza.ui.PageEntrainement;
+package com.example.faza.ui.PageEntrainement.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;

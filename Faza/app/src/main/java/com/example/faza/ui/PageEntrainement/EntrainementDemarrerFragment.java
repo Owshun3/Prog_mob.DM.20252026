@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.faza.R;
 import com.example.faza.data.entites.Entrainement;
-import com.example.faza.data.entites.Programme;
 import com.example.faza.data.managers.ManagerGlobal;
+import com.example.faza.ui.PageEntrainement.adapters.ProgrammeAdapter;
 
 public class EntrainementDemarrerFragment extends Fragment {
     private ProgrammeAdapter adapter;
