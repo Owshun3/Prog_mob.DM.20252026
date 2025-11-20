@@ -16,6 +16,7 @@ import com.example.faza.data.entites.Programme;
 import com.example.faza.data.managers.ManagerGlobal;
 
 public class EntrainementBibliothequeFragment extends Fragment {
+    private ProgrammeAdapter adapter;
 
     private RecyclerView recycler;
     private Button btnAjouter;
@@ -29,11 +30,10 @@ public class EntrainementBibliothequeFragment extends Fragment {
 
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        ProgrammeAdapter adapter = new ProgrammeAdapter(
+        adapter = new ProgrammeAdapter(
                 ManagerGlobal.getInstance().getManagerProgramme().getProgrammes(),
                 p -> ouvrirProgramme(p.getId(), ProgrammeEditorMode.READ_ONLY)
         );
-
         recycler.setAdapter(adapter);
 
         btnAjouter.setOnClickListener(x -> {
@@ -41,6 +41,10 @@ public class EntrainementBibliothequeFragment extends Fragment {
                     .getManagerProgramme()
                     .creerProgramme(requireContext(), "Nouveau programme");
             ouvrirProgramme(p.getId(), ProgrammeEditorMode.EDIT_LIBRARY);
+        });
+
+        getParentFragmentManager().addOnBackStackChangedListener(() -> {
+            if (adapter != null) adapter.notifyDataSetChanged();
         });
 
         return v;
@@ -62,14 +66,7 @@ public class EntrainementBibliothequeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        if (recycler != null) {
-            ProgrammeAdapter adapter = new ProgrammeAdapter(
-                    ManagerGlobal.getInstance().getManagerProgramme().getProgrammes(),
-                    p -> ouvrirProgramme(p.getId(), ProgrammeEditorMode.READ_ONLY)
-            );
-
-            recycler.setAdapter(adapter);
-        }
+        if (adapter != null) adapter.notifyDataSetChanged();
     }
+
 }

@@ -16,22 +16,21 @@ import com.example.faza.data.entites.Entrainement;
 import com.example.faza.data.entites.Programme;
 import com.example.faza.data.managers.ManagerGlobal;
 
-//TODO : Gérer les séries
 public class EntrainementDemarrerFragment extends Fragment {
-
-    private RecyclerView recycler;
+    private ProgrammeAdapter adapter;
+    private RecyclerView recyclerProgrammes;
     private Button btnDemarrerVierge;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_entrainement_demarrer, container, false);
 
-        recycler = v.findViewById(R.id.recyclerProgrammesDemarrer);
+        recyclerProgrammes = v.findViewById(R.id.recyclerProgrammesDemarrer);
         btnDemarrerVierge = v.findViewById(R.id.btnDemarrerVierge);
 
-        recycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerProgrammes.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        ProgrammeAdapter adapter = new ProgrammeAdapter(
+        adapter = new ProgrammeAdapter(
                 ManagerGlobal.getInstance().getManagerProgramme().getProgrammes(),
                 p -> {
                     Entrainement e = ManagerGlobal.getInstance()
@@ -40,8 +39,8 @@ public class EntrainementDemarrerFragment extends Fragment {
                     ouvrirEntrainementEnCours(e.getId());
                 }
         );
+        recyclerProgrammes.setAdapter(adapter);
 
-        recycler.setAdapter(adapter);
 
         btnDemarrerVierge.setOnClickListener(x -> {
             Entrainement e = ManagerGlobal.getInstance()
@@ -49,6 +48,11 @@ public class EntrainementDemarrerFragment extends Fragment {
                     .creerVierge(requireContext());
             ouvrirEntrainementEnCours(e.getId());
         });
+
+        getParentFragmentManager().addOnBackStackChangedListener(() -> {
+            if (adapter != null) adapter.notifyDataSetChanged();
+        });
+
 
         return v;
     }
@@ -65,4 +69,12 @@ public class EntrainementDemarrerFragment extends Fragment {
                 .addToBackStack(null)
                 .commit();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adapter != null) adapter.notifyDataSetChanged();
+    }
+
+
 }

@@ -81,6 +81,14 @@ public class ProgrammeEditorFragment extends Fragment {
             programme = ManagerGlobal.getInstance().getManagerProgramme().getProgrammeById(pId);
         }
 
+
+        if (programme == null) {
+            requireActivity().getSupportFragmentManager().popBackStack();
+            View fullscreen = requireActivity().findViewById(R.id.containerFragmentFullScreenEntrainement);
+            if (fullscreen != null) fullscreen.setVisibility(View.GONE);
+            return v;
+        }
+
         recyclerExercices.setLayoutManager(new LinearLayoutManager(getContext()));
 
         appliquerMode();
@@ -143,7 +151,7 @@ public class ProgrammeEditorFragment extends Fragment {
             exerciceAdapter.notifyItemInserted(programme.getExercices().size() - 1);
         });
 
-        btnEnregistrer.setOnClickListener(v -> {        //TODO : sauvegarder les entrainements (correctement)
+        btnEnregistrer.setOnClickListener(v -> {
             String nom = editNom.getText().toString().trim();
 
             if (nom.isEmpty()) {
