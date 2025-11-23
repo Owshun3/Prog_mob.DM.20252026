@@ -80,6 +80,8 @@ public class SelectionExerciceFragment extends Fragment {
 
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
         recycler.setAdapter(adapter);
+        adapter.updateList( ManagerGlobal.getInstance().getManagerExercice().getTous() );
+
 
         List<String> groupes = adapter.getGroupesPrincipaux();
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, groupes);
@@ -87,9 +89,11 @@ public class SelectionExerciceFragment extends Fragment {
         spinnerGroupe.setAdapter(spinnerAdapter);
 
         editRecherche.addTextChangedListener(new SimpleTextWatcher(text -> {
-            List<Exercice> filtres =
-                    ManagerGlobal.getInstance().getManagerExercice().rechercher(text);
-            adapter.updateList(filtres);
+            if (text == null || text.trim().isEmpty()) {
+                adapter.updateList(ManagerGlobal.getInstance().getManagerExercice().getTous());
+            } else {
+                adapter.updateList(ManagerGlobal.getInstance().getManagerExercice().rechercher(text));
+            }
         }));
 
         spinnerGroupe.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
@@ -148,5 +152,9 @@ public class SelectionExerciceFragment extends Fragment {
         }
 
         requireActivity().getSupportFragmentManager().popBackStack();
+        View fullscreen = requireActivity().findViewById(R.id.containerFragmentFullScreenEntrainement);
+        if (fullscreen != null) {
+            fullscreen.setVisibility(View.GONE);
+        }
     }
 }

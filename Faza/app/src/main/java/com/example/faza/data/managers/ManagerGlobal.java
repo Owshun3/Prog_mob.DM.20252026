@@ -2,6 +2,7 @@ package com.example.faza.data.managers;
 
 import android.content.Context;
 
+import com.example.faza.R;
 import com.example.faza.data.Service.ExerciceCsvLoader;
 import com.example.faza.data.entites.Exercice;
 import com.example.faza.data.entites.User;
@@ -34,24 +35,20 @@ public class ManagerGlobal {
 
     private void chargerExercicesDepuisCSV(Context ctx) {
         try {
-            InputStream is = ctx.getAssets().open("exercices.csv");
+            InputStream is = ctx.getResources().openRawResource(R.raw.exercices);
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
-            String line = br.readLine();
-
+            String line;
             while ((line = br.readLine()) != null) {
-                String[] cols = line.split(",");
-
+                String[] cols = line.split(";");
                 if (cols.length < 4) continue;
-
-                String nomExercice = cols[3].replace("\"", "").trim();
-                if (nomExercice.isEmpty()) continue;
-
                 Exercice e = new Exercice();
-                ManagerExercice mgr = getManagerExercice();
-                mgr.ajouterSiAbsent(e);
+                e.setNom(cols[0].trim());
+                e.setGroupePrincipal(cols[1].trim());
+                e.setGroupeSecondaire(cols[2].trim());
+                e.setMiniature(cols[3].trim());
+                //videos à faire plus tard
+                managerExercice.ajouterSiAbsent(e);
             }
-
             br.close();
         } catch (Exception ex) {
             ex.printStackTrace();

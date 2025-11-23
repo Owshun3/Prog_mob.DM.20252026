@@ -72,4 +72,23 @@ public class Exercice {
         }
         series.add(s);
     }
+
+    public String getResume() {
+        int nb = series.size();
+        if (nb == 0) return "";
+        int minRep = series.get(0).getRepetitions();
+        int maxRep = minRep;
+        double minPoids = series.get(0).getPoids();
+        double maxPoids = minPoids;
+        for (Serie s : series) {
+            int r = s.getRepetitions();
+            if (r < minRep) minRep = r;
+            if (r > maxRep) maxRep = r;
+            double p = s.getPoids();
+            if (p < minPoids) minPoids = p;
+            if (p > maxPoids) maxPoids = p;
+        }
+        return nb + " séries - " + minRep + "-" + maxRep + " reps - " + minPoids + "-" + maxPoids + " kg";
+    }
+
 }
