@@ -107,25 +107,28 @@ public class SelectionExerciceFragment extends Fragment {
     }
 
     private void lancerFiltre() {
-        String q = editRecherche.getText() != null ? editRecherche.getText().toString() : "";
-        String g = spinnerGroupe.getSelectedItem() != null ? spinnerGroupe.getSelectedItem().toString() : "";
+        String q = editRecherche.getText() != null ? editRecherche.getText().toString().trim() : "";
+        String g = spinnerGroupe.getSelectedItem() != null ? spinnerGroupe.getSelectedItem().toString().trim() : "";
+
+        if (q.isEmpty() && (g.isEmpty() || g.equalsIgnoreCase("Tous"))) {
+            adapter.updateList(ManagerGlobal.getInstance().getManagerExercice().getTous());
+            return;
+        }
 
         List<Exercice> base = ManagerGlobal.getInstance().getManagerExercice().getTous();
         List<Exercice> res = new ArrayList<>();
 
-        String qLower = q.trim().toLowerCase();
-        String gLower = g.trim().toLowerCase();
+        String qLower = q.toLowerCase();
+        String gLower = g.toLowerCase();
 
         for (Exercice e : base) {
             String nom = e.getNom() != null ? e.getNom().toLowerCase() : "";
             String gp = e.getGroupePrincipal() != null ? e.getGroupePrincipal().toLowerCase() : "";
 
             boolean okNom = qLower.isEmpty() || nom.contains(qLower);
-            boolean okGroupe = gLower.isEmpty() || gp.contains(gLower);
+            boolean okGroupe = gLower.isEmpty() || gLower.equals("tous") || gp.contains(gLower);
 
-            if (okNom && okGroupe) {
-                res.add(e);
-            }
+            if (okNom && okGroupe) res.add(e);
         }
 
         adapter.updateList(res);
