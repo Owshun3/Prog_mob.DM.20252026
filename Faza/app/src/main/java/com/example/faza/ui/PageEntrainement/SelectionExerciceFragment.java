@@ -153,11 +153,6 @@ public class SelectionExerciceFragment extends Fragment {
                 p.ajouterExercice(copie);
             }
         }
-
         requireActivity().getSupportFragmentManager().popBackStack();
-        View fullscreen = requireActivity().findViewById(R.id.containerFragmentFullScreenEntrainement);
-        if (fullscreen != null) {
-            fullscreen.setVisibility(View.GONE);
-        }
     }
 }

@@ -176,7 +176,7 @@ public class ProgrammeEditorFragment extends Fragment {
             f = SelectionExerciceFragment.newInstanceForProgramme(programme.getId());
         }
 
-        requireActivity().getSupportFragmentManager()
+        getParentFragmentManager()
                 .beginTransaction()
                 .replace(R.id.containerFragmentFullScreenEntrainement, f)
                 .addToBackStack(null)
