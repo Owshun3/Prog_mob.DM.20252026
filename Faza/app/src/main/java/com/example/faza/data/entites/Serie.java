@@ -23,6 +23,9 @@ public class Serie {
         this.validee = validee;
     }
 
+    public void valider(){
+        validee = !validee;
+    }
 
     public String toCSV(){
         if(id == -1){

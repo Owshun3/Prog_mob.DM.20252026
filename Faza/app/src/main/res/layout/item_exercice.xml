@@ -10,17 +10,17 @@
         android:layout_height="wrap_content"
         android:hint="Nom exercice"/>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerSeries"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <Button
         android:id="@+id/btnSupprimerExercice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Supprimer exercice"
         android:textColor="@android:color/holo_red_dark"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerSeries"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
 
     <Button
         android:id="@+id/btnAjouterSerie"
