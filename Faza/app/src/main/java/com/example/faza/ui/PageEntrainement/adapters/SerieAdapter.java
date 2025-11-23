@@ -24,10 +24,13 @@ public class SerieAdapter extends RecyclerView.Adapter<SerieAdapter.ViewHolder> 
     private final List<Serie> series;
     private final boolean editable;
     private final OnSerieDeleteListener deleteListener;
+    private final boolean trainingMode;
 
-    public SerieAdapter(List<Serie> series, boolean editable, OnSerieDeleteListener deleteListener) {
+    public SerieAdapter(List<Serie> series, boolean editable, boolean trainingMode,
+                        OnSerieDeleteListener deleteListener) {
         this.series = series;
         this.editable = editable;
+        this.trainingMode = trainingMode;
         this.deleteListener = deleteListener;
     }
 
@@ -50,6 +53,25 @@ public class SerieAdapter extends RecyclerView.Adapter<SerieAdapter.ViewHolder> 
         h.editPoids.setEnabled(editable);
         h.editReps.setEnabled(editable);
         h.editRir.setEnabled(editable);
+
+        if (trainingMode) {
+
+            h.btnValider.setVisibility(View.VISIBLE);
+
+            if (s.isValidee()) {
+                h.itemView.setBackgroundColor(0xFFCCFFCC);
+            } else {
+                h.itemView.setBackgroundColor(0x00000000);
+            }
+
+            h.btnValider.setOnClickListener(v -> {
+                s.valider();
+                notifyItemChanged(pos);
+            });
+
+        } else {
+            h.btnValider.setVisibility(View.GONE);
+        }
 
         h.btnDelete.setVisibility(editable ? View.VISIBLE : View.GONE);
 
@@ -77,7 +99,7 @@ public class SerieAdapter extends RecyclerView.Adapter<SerieAdapter.ViewHolder> 
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         EditText editPoids, editReps, editRir;
-        Button btnDelete;
+        Button btnDelete, btnValider;
 
         ViewHolder(View v) {
             super(v);
@@ -85,6 +107,7 @@ public class SerieAdapter extends RecyclerView.Adapter<SerieAdapter.ViewHolder> 
             editReps = v.findViewById(R.id.editReps);
             editRir = v.findViewById(R.id.editRir);
             btnDelete = v.findViewById(R.id.btnDeleteSerie);
+            btnValider = v.findViewById(R.id.btnValiderSerie);
         }
     }
 }

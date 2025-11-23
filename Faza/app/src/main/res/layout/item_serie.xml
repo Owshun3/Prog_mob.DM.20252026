@@ -31,7 +31,13 @@
 
     <Button
         android:id="@+id/btnDeleteSerie"
-        android:layout_width="wrap_content"
+        android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:text="X"/>
+    <Button
+        android:id="@+id/btnValiderSerie"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:text="✔"
+        android:layout_marginStart="8dp"/>
 </LinearLayout>

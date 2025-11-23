@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -25,7 +26,7 @@ public class EntrainementEnCoursFragment extends Fragment {
     private TextView txtTitre;
     private TextView txtChrono;
     private Button btnTerminer;
-
+    private Button btnAbandonner;
     private long startTime;
     private boolean chronoRunning = false;
 
@@ -51,7 +52,7 @@ public class EntrainementEnCoursFragment extends Fragment {
         txtTitre = v.findViewById(R.id.txtTitreProgramme);
         txtChrono = v.findViewById(R.id.txtChrono);
         btnTerminer = v.findViewById(R.id.btnTerminer);
-
+        btnAbandonner = v.findViewById(R.id.btnAbandonner);
         Programme programme = entrainement.getProgramme();
         txtTitre.setText(programme != null ? programme.getNom() : "Entraînement");
 
@@ -65,6 +66,16 @@ public class EntrainementEnCoursFragment extends Fragment {
         startChrono();
 
         btnTerminer.setOnClickListener(x -> {
+            ManagerGlobal.getInstance()
+                    .getManagerEntrainement()
+                    .sauvegarderEntrainement(entrainement);
+            Toast.makeText(requireContext(), "Séance sauvegardée", Toast.LENGTH_SHORT).show();
+            getParentFragmentManager().popBackStack();
+            View full = requireActivity().findViewById(R.id.containerFragmentFullScreenEntrainement);
+            full.setVisibility(View.GONE);
+        });
+
+        btnAbandonner.setOnClickListener(x -> {
             getParentFragmentManager().popBackStack();
             View full = requireActivity().findViewById(R.id.containerFragmentFullScreenEntrainement);
             full.setVisibility(View.GONE);

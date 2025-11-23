@@ -74,6 +74,7 @@ public class ProgrammeEditorFragment extends Fragment {
 
         if (mode == ProgrammeEditorMode.EDIT_TRAINING) {
             long eId = args.getLong(ARG_ENTRAINEMENT_ID);
+            btnEnregistrer.setVisibility(View.GONE);
             entrainement = ManagerGlobal.getInstance().getManagerEntrainement().getById(eId);
             if (entrainement != null) {
                 programme = entrainement.getProgramme();
@@ -84,6 +85,7 @@ public class ProgrammeEditorFragment extends Fragment {
             }
         } else {
             long pId = args.getLong(ARG_PROGRAMME_ID);
+            btnEnregistrer.setVisibility(View.VISIBLE);
             programme = ManagerGlobal.getInstance().getManagerProgramme().getProgrammeById(pId);
         }
 
@@ -110,51 +112,86 @@ public class ProgrammeEditorFragment extends Fragment {
     }
 
     private void appliquerMode() {
+
         if (mode == ProgrammeEditorMode.READ_ONLY) {
-            txtNom.setVisibility(View.VISIBLE);
-            editNom.setVisibility(View.GONE);
-            btnModifier.setVisibility(View.VISIBLE);
-            btnEnregistrer.setVisibility(View.GONE);
-            btnSupprimer.setVisibility(View.GONE);
-            btnAjouterExercice.setVisibility(View.GONE);
-
-            txtNom.setText(getNomSafe());
-
-            exerciceAdapter = new ExerciceAdapter(
-                    programme.getExercices(),
-                    false,
-                    null
-            );
-            recyclerExercices.setAdapter(exerciceAdapter);
-
-            btnModifier.setOnClickListener(x -> changerMode(ProgrammeEditorMode.EDIT_LIBRARY));
+            appliquerModeLectureSeule();
             return;
         }
 
+        appliquerModeEditionGenerale();
+        appliquerVisibiliteBoutonsEdition();
+        configurerAdapterEdition();
+        configurerActionsEdition();
+    }
+
+    private void appliquerModeLectureSeule() {
+        txtNom.setVisibility(View.VISIBLE);
+        editNom.setVisibility(View.GONE);
+        btnModifier.setVisibility(View.VISIBLE);
+        btnEnregistrer.setVisibility(View.GONE);
+        btnSupprimer.setVisibility(View.GONE);
+        btnAjouterExercice.setVisibility(View.GONE);
+
+        txtNom.setText(getNomSafe());
+
+        exerciceAdapter = new ExerciceAdapter(
+                programme.getExercices(),
+                false,
+                false,
+                null
+        );
+        recyclerExercices.setAdapter(exerciceAdapter);
+
+        btnModifier.setOnClickListener(x -> changerMode(ProgrammeEditorMode.EDIT_LIBRARY));
+    }
+
+    private void appliquerModeEditionGenerale() {
+
         txtNom.setVisibility(View.GONE);
         editNom.setVisibility(View.VISIBLE);
+
         editNom.setText(getNomSafe());
         editNom.addTextChangedListener(new SimpleTextWatcher(programme::setNom));
 
         btnModifier.setVisibility(View.GONE);
-        btnEnregistrer.setVisibility(View.VISIBLE);
+    }
+
+    private void appliquerVisibiliteBoutonsEdition() {
+        if (mode == ProgrammeEditorMode.EDIT_TRAINING) {
+            btnEnregistrer.setVisibility(View.GONE);
+        } else {
+            btnEnregistrer.setVisibility(View.VISIBLE);
+        }
+
         btnAjouterExercice.setVisibility(View.VISIBLE);
 
+        btnSupprimer.setVisibility(
+                mode == ProgrammeEditorMode.EDIT_LIBRARY ? View.VISIBLE : View.GONE
+        );
+    }
+
+    private void configurerAdapterEdition() {
+
+        ExerciceAdapter.OnExerciceDeleteListener deleteListener = null;
+
         if (mode == ProgrammeEditorMode.EDIT_LIBRARY) {
-            btnSupprimer.setVisibility(View.VISIBLE);
-        } else {
-            btnSupprimer.setVisibility(View.GONE);
+            deleteListener = (ex, position) -> {
+                programme.getExercices().remove(position);
+                exerciceAdapter.notifyItemRemoved(position);
+            };
         }
 
         exerciceAdapter = new ExerciceAdapter(
                 programme.getExercices(),
                 true,
-                (ex, pos) -> {
-                    programme.getExercices().remove(pos);
-                    exerciceAdapter.notifyItemRemoved(pos);
-                }
+                mode == ProgrammeEditorMode.EDIT_TRAINING,
+                deleteListener
         );
+
         recyclerExercices.setAdapter(exerciceAdapter);
+    }
+
+    private void configurerActionsEdition() {
 
         btnAjouterExercice.setOnClickListener(v -> ouvrirSelectionExercice());
 

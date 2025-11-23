@@ -60,10 +60,19 @@ public class ManagerEntrainement {
         return id;
     }
 
+    public void sauvegarderEntrainement(Entrainement e) {
+        if (e == null) return;
+        if (!entrainements.contains(e)) {
+            entrainements.add(e);
+        }
+    }
+    /*
     public void sauvegarderEntrainement(Context ctx, Entrainement e) {
         updateEntrainement(ctx, e);
         //saveExosEtSeries(ctx, e);
     }
+
+     */
 
     private void updateEntrainement(Context ctx, Entrainement e) {
         DBAdapter db = new DBAdapter(ctx).open();
