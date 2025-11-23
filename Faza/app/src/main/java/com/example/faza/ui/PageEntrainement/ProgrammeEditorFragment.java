@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -75,24 +76,18 @@ public class ProgrammeEditorFragment extends Fragment {
         if (mode == ProgrammeEditorMode.EDIT_TRAINING) {
             long eId = args.getLong(ARG_ENTRAINEMENT_ID);
             entrainement = ManagerGlobal.getInstance().getManagerEntrainement().getById(eId);
-            if (entrainement != null) {
-                programme = entrainement.getProgramme();
-                if (programme == null) {
-                    programme = new Programme();
-                    entrainement.setProgramme(programme);
-                }
-            }
+            programme = entrainement.getProgramme();
         } else {
             long pId = args.getLong(ARG_PROGRAMME_ID);
             programme = ManagerGlobal.getInstance().getManagerProgramme().getProgrammeById(pId);
         }
 
         if (programme == null) {
+            Toast.makeText(getContext(), "Programme introuvable", Toast.LENGTH_SHORT).show();
             requireActivity().getSupportFragmentManager().popBackStack();
-            View fullscreen = requireActivity().findViewById(R.id.containerFragmentFullScreenEntrainement);
-            if (fullscreen != null) fullscreen.setVisibility(View.GONE);
             return v;
         }
+
 
         recyclerExercices.setLayoutManager(new LinearLayoutManager(getContext()));
 
