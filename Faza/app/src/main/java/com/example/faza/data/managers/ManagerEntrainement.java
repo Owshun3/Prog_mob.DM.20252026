@@ -2,6 +2,8 @@ package com.example.faza.data.managers;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+
 import com.example.faza.data.DBAdapter;
 import com.example.faza.data.entites.Entrainement;
 import com.example.faza.data.entites.Exercice;
@@ -9,6 +11,7 @@ import com.example.faza.data.entites.Programme;
 import com.example.faza.data.entites.Serie;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ManagerEntrainement {
 
@@ -100,5 +103,54 @@ public class ManagerEntrainement {
 
         p.setExercices(exs);
         return p;
+    }
+
+    public int getTotalSessions(Context ctx) { return Entrainement.getAll(ctx).size(); }
+
+    public int getTotalDurationMinutes(Context ctx) {
+        int total = 0;
+        for (Entrainement e : Entrainement.getAll(ctx)) {
+            total += e.getDureeMin();
+        }
+        return total;
+    }
+
+    public double getTotalVolume(Context ctx) {
+        double total = 0;
+        for (Entrainement e : Entrainement.getAll(ctx)) {
+            total += e.getChargeTotale();
+        }
+        return total;
+    }
+
+    public int getTotalReps(Context ctx) {
+        int total = 0;
+        for (Entrainement e : Entrainement.getAll(ctx)) {
+            total += e.getNbRepetitions();
+        }
+        return total;
+    }
+
+    public ArrayList<Entrainement> getAll(Context ctx) {
+        ArrayList<Entrainement> list = new ArrayList<>();
+
+        DBAdapter db = new DBAdapter(ctx).open();
+        Cursor c = db.getAll("entrainement");
+
+        if (c.moveToFirst()) {
+            do {
+                Entrainement e = new Entrainement();
+                e.setId(c.getLong(c.getColumnIndexOrThrow("id")));
+                e.setDateSeance(c.getString(c.getColumnIndexOrThrow("date_seance")));
+                e.setDureeMin(c.getInt(c.getColumnIndexOrThrow("duree_min")));
+                e.setPhotoFin(c.getString(c.getColumnIndexOrThrow("photo_fin")));
+                list.add(e);
+            }
+            while (c.moveToNext());
+        }
+
+        c.close();
+        db.close();
+        return list;
     }
 }
