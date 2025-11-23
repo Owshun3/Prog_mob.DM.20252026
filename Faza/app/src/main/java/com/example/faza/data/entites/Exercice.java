@@ -12,6 +12,10 @@ public class Exercice {
     private String urlVideo = "";
     private String miniature = "";
     private boolean copie = false;
+    private boolean uiExpanded = false;
+    public boolean isUiExpanded() { return uiExpanded; }
+    public void toggleUiExpanded() { uiExpanded = !uiExpanded; }
+
 
     private List<Serie> series = new ArrayList<>();
 

@@ -80,21 +80,16 @@ public class SelectionExerciceFragment extends Fragment {
 
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
         recycler.setAdapter(adapter);
-        adapter.updateList( ManagerGlobal.getInstance().getManagerExercice().getTous() );
 
+        List<Exercice> tous = ManagerGlobal.getInstance().getManagerExercice().getTous();
+        adapter.updateList(tous);
 
         List<String> groupes = adapter.getGroupesPrincipaux();
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, groupes);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerGroupe.setAdapter(spinnerAdapter);
 
-        editRecherche.addTextChangedListener(new SimpleTextWatcher(text -> {
-            if (text == null || text.trim().isEmpty()) {
-                adapter.updateList(ManagerGlobal.getInstance().getManagerExercice().getTous());
-            } else {
-                adapter.updateList(ManagerGlobal.getInstance().getManagerExercice().rechercher(text));
-            }
-        }));
+        editRecherche.addTextChangedListener(new SimpleTextWatcher(text -> lancerFiltre()));
 
         spinnerGroupe.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
             @Override public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
@@ -153,6 +148,6 @@ public class SelectionExerciceFragment extends Fragment {
                 p.ajouterExercice(copie);
             }
         }
-        requireActivity().getSupportFragmentManager().popBackStack();
+        getParentFragmentManager().popBackStack();
     }
 }

@@ -26,14 +26,19 @@ public class ManagerExercice {
 
     public ArrayList<Exercice> rechercher(String texte) {
         ArrayList<Exercice> res = new ArrayList<>();
+        if (texte == null) {
+            res.addAll(getTous());
+            return res;
+        }
         String t = texte.toLowerCase();
-
         for (Exercice e : exercices.values()) {
-            if (e.getNom().toLowerCase().contains(t)) {
+            String nom = e.getNom();
+            if (nom != null && nom.toLowerCase().contains(t)) {
                 res.add(e);
             }
         }
         return res;
     }
+
 
 }

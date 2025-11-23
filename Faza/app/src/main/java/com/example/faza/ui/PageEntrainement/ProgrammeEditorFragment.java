@@ -165,6 +165,20 @@ public class ProgrammeEditorFragment extends Fragment {
         );
     }
 
+    private int getContainerId() {
+        View parent = (View) getView().getParent();
+        if (parent != null) {
+            int id = parent.getId();
+
+            if (id == R.id.containerProgrammeEditor) {
+                return R.id.containerProgrammeEditor;
+            }
+        }
+        return R.id.containerFragmentFullScreenEntrainement;
+    }
+
+
+
     private void configurerAdapterEdition() {
 
         ExerciceAdapter.OnExerciceDeleteListener deleteListener = null;
@@ -210,7 +224,7 @@ public class ProgrammeEditorFragment extends Fragment {
 
         getParentFragmentManager()
                 .beginTransaction()
-                .replace(R.id.containerFragmentFullScreenEntrainement, f)
+                .replace(getContainerId(), f)
                 .addToBackStack(null)
                 .commit();
     }
