@@ -58,14 +58,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         ");"
         );
 
-        db.execSQL("CREATE TABLE exercice(" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "nom TEXT," +
+        db.execSQL(
+                "CREATE TABLE exercice( " +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "id_programme INTEGER, " +
+                "nom TEXT, " +
                 "groupe_principal TEXT," +
                 "groupe_secondaire TEXT," +
-                "description TEXT," +
-                "url_video TEXT," +
-                "miniature TEXT)");
+                "url_video TEXT, " +
+                "miniature TEXT"+
+                ");"
+        );
 
         db.execSQL("CREATE TABLE programme_exercice(" +
                 "id_programme INTEGER," +

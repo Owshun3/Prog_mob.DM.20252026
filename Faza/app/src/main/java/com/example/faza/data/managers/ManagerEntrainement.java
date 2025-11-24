@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.example.faza.data.DatabaseHelper;
 import com.example.faza.data.entites.Entrainement;
+import com.example.faza.data.entites.Exercice;
 import com.example.faza.data.entites.Programme;
+import com.example.faza.data.entites.Serie;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +80,34 @@ public class ManagerEntrainement {
         Programme copie = source.copieDeep();
         long idProgramme = insertProgrammeSession(ctx, idEntrainement, copie);
         copie.setId(idProgramme);
+        SQLiteDatabase db = DatabaseHelper.getInstance(ctx).getWritableDatabase();
+
+        for (Exercice ex : copie.getExercices()) {
+
+            ContentValues ve = new ContentValues();
+            ve.put("id_programme", idProgramme);
+            ve.put("nom", ex.getNom());
+            ve.put("groupe_principal", ex.getGroupePrincipal());
+            ve.put("groupe_secondaire", ex.getGroupeSecondaire());
+            ve.put("url_video", ex.getUrlVideo());
+            ve.put("miniature", ex.getMiniature());
+
+            long idEx = db.insert("exercice", null, ve);
+            ex.setId(idEx);
+
+            for (Serie s : ex.getSeries()) {
+                ContentValues vs = new ContentValues();
+                vs.put("id_exercice", idEx);
+                vs.put("poids", s.getPoids());
+                vs.put("repetitions", s.getRepetitions());
+                vs.put("rir", s.getRir());
+                vs.put("validee", s.isValidee() ? 1 : 0);
+
+                long idS = db.insert("serie", null, vs);
+                s.setId(idS);
+            }
+        }
+
         return copie;
     }
 
@@ -97,9 +127,82 @@ public class ManagerEntrainement {
         v.put("nb_repetitions", e.getNbRepetitions());
 
         db.update(DatabaseHelper.T_ENTRAINEMENT, v, "id=?", new String[]{String.valueOf(e.getId())});
-
+        Programme p = e.getProgramme();
+        p.calculerChargeEtStats();
+        sauvegarderProgrammeSession(ctx, e.getId(), p);
         if (!cache.contains(e)) cache.add(e);
     }
+
+    private void sauvegarderProgrammeSession(Context ctx, long idEntrainement, Programme p) {
+
+        SQLiteDatabase db = DatabaseHelper.getInstance(ctx).getWritableDatabase();
+
+        ContentValues v = new ContentValues();
+        v.put("nom", p.getNom());
+        v.put("commentaire", p.getCommentaire());
+        v.put("charge_totale", p.getChargeTotale());
+        v.put("nb_series", p.getNbSeries());
+        v.put("nb_repetitions", p.getNbRepetitions());
+
+        db.update("programme", v, "id=? AND id_entrainement=?",
+                new String[]{String.valueOf(p.getId()), String.valueOf(idEntrainement)});
+        sauvegarderExercices(ctx, p);
+    }
+
+    private void sauvegarderExercices(Context ctx, Programme p) {
+
+        SQLiteDatabase db = DatabaseHelper.getInstance(ctx).getWritableDatabase();
+        db.delete("programme_exercice", "id_programme=?", new String[]{String.valueOf(p.getId())});
+        for (int ordre = 0; ordre < p.getExercices().size(); ordre++) {
+
+            Exercice e = p.getExercices().get(ordre);
+            ContentValues ve = new ContentValues();
+            ve.put("nom", e.getNom());
+            ve.put("groupe_principal", e.getGroupePrincipal());
+            ve.put("groupe_secondaire", e.getGroupeSecondaire());
+            ve.put("miniature", e.getMiniature());
+            ve.put("url_video", e.getUrlVideo());
+
+            long idEx;
+            if (e.getId() <= 0) {
+                idEx = db.insert("exercice", null, ve);
+                e.setId(idEx);
+            } else {
+                idEx = e.getId();
+                db.update("exercice", ve, "id=?", new String[]{String.valueOf(idEx)});
+            }
+            ContentValues vr = new ContentValues();
+            vr.put("id_programme", p.getId());
+            vr.put("id_exercice", idEx);
+            vr.put("ordre", ordre);
+
+            db.insert("programme_exercice", null, vr);
+            if (idEx <= 0) continue;
+            sauvegarderSeries(db, e);
+        }
+    }
+
+    private void sauvegarderSeries(SQLiteDatabase db, Exercice e) {
+
+        db.delete("serie", "id_exercice=?", new String[]{String.valueOf(e.getId())});
+
+        for (Serie s : e.getSeries()) {
+            ContentValues vs = new ContentValues();
+            vs.put("id_exercice", e.getId());
+            vs.put("poids", s.getPoids());
+            vs.put("repetitions", s.getRepetitions());
+            vs.put("rir", s.getRir());
+            vs.put("validee", s.isValidee() ? 1 : 0);
+
+            if (s.getId() == 0) {
+                long id = db.insert("serie", null, vs);
+                s.setId(id);
+            } else {
+                db.update("serie", vs, "id=?", new String[]{String.valueOf(s.getId())});
+            }
+        }
+    }
+
 
     public Entrainement getById(long id) {
         for (Entrainement e : cache) {

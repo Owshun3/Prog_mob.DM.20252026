@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.faza.data.DatabaseHelper;
+import com.example.faza.data.entites.Exercice;
 import com.example.faza.data.entites.Programme;
 
 import java.util.ArrayList;
@@ -30,12 +31,10 @@ public class ManagerProgramme {
 
         SQLiteDatabase db = null;
         Cursor c = null;
-
         try {
             db = DatabaseHelper.getInstance(context).getReadableDatabase();
-
             c = db.rawQuery(
-                    "SELECT id, nom, commentaire " +
+                    "SELECT id, nom, commentaire, charge_totale, nb_series, nb_repetitions " +
                             "FROM programme WHERE type='LIBRARY' ORDER BY id DESC",
                     null
             );
@@ -45,15 +44,31 @@ public class ManagerProgramme {
                 p.setId(c.getLong(0));
                 p.setNom(c.getString(1));
                 p.setCommentaire(c.getString(2));
+                Cursor ce = db.rawQuery(
+                        "SELECT id, nom, groupe_principal, groupe_secondaire, miniature, url_video " +
+                                "FROM exercice WHERE id_programme=?",
+                        new String[]{String.valueOf(p.getId())}
+                );
+
+                while (ce.moveToNext()) {
+                    Exercice ex = new Exercice();
+                    ex.setId(ce.getLong(0));
+                    ex.setNom(ce.getString(1));
+                    ex.setGroupePrincipal(ce.getString(2));
+                    ex.setGroupeSecondaire(ce.getString(3));
+                    ex.setMiniature(ce.getString(4));
+                    ex.setUrlVideo(ce.getString(5));
+
+                    p.getExercices().add(ex);
+                }
+                ce.close();
 
                 programmes.add(p);
             }
-
         } finally {
             if (c != null) c.close();
         }
     }
-
 
     public Programme creerProgramme(Context ctx, String nom) {
         SQLiteDatabase db = DatabaseHelper.getInstance(ctx).getWritableDatabase();
@@ -63,10 +78,26 @@ public class ManagerProgramme {
         values.put("commentaire", "");
         values.put("type", "LIBRARY");
         values.put("id_entrainement", (String) null);
+        values.put("charge_totale", 0);
+        values.put("nb_series", 0);
+        values.put("nb_repetitions", 0);
 
         long id = db.insert("programme", null, values);
 
         Programme p = new Programme();
+        for (Exercice ex : p.getExercices()) {
+            ContentValues ve = new ContentValues();
+            ve.put("id_programme", id);
+            ve.put("nom", ex.getNom());
+            ve.put("groupe_principal", ex.getGroupePrincipal());
+            ve.put("groupe_secondaire", ex.getGroupeSecondaire());
+            ve.put("url_video", ex.getUrlVideo());
+            ve.put("miniature", ex.getMiniature());
+
+            long idEx = db.insert("exercice", null, ve);
+            ex.setId(idEx);
+        }
+
         p.setId(id);
         p.setNom(nom);
         p.setCommentaire("");
@@ -103,6 +134,22 @@ public class ManagerProgramme {
         values.put("charge_totale", p.getChargeTotale());
         values.put("nb_series", p.getNbSeries());
         values.put("nb_repetitions", p.getNbRepetitions());
+
+        db.delete("exercice", "id_programme=?", new String[]{String.valueOf(p.getId())});
+
+        for (Exercice ex : p.getExercices()) {
+            ContentValues ve = new ContentValues();
+            ve.put("id_programme", p.getId());
+            ve.put("nom", ex.getNom());
+            ve.put("groupe_principal", ex.getGroupePrincipal());
+            ve.put("groupe_secondaire", ex.getGroupeSecondaire());
+            ve.put("url_video", ex.getUrlVideo());
+            ve.put("miniature", ex.getMiniature());
+
+            long idEx = db.insert("exercice", null, ve);
+            ex.setId(idEx);
+        }
+
 
         db.update("programme", values, "id=?", new String[]{String.valueOf(p.getId())});
     }
