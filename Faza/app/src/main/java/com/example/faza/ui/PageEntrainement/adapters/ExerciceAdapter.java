@@ -1,5 +1,6 @@
 package com.example.faza.ui.PageEntrainement.adapters;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +50,7 @@ public class ExerciceAdapter extends RecyclerView.Adapter<ExerciceAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ExerciceAdapter.ViewHolder h, int pos) {
+    public void onBindViewHolder(@NonNull ExerciceAdapter.ViewHolder h, @SuppressLint("RecyclerView") int pos) {
         Exercice e = exercices.get(pos);
 
         h.txtNom.setText(e.getNom());
@@ -66,47 +67,42 @@ public class ExerciceAdapter extends RecyclerView.Adapter<ExerciceAdapter.ViewHo
 
         if (editable && deleteListener != null) {
             h.btnDelete.setVisibility(View.VISIBLE);
-            h.btnDelete.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    deleteListener.onDelete(e, pos);
-                }
-            });
+            h.btnDelete.setOnClickListener(v -> deleteListener.onDelete(e, pos));
         } else {
             h.btnDelete.setVisibility(View.GONE);
         }
 
         boolean isExpanded = expanded.contains(pos);
+        if (isExpanded)
+            h.imgIndicator.setImageResource(R.drawable.ic_arrow_drop_up);
+        else
+            h.imgIndicator.setImageResource(R.drawable.ic_arrow_drop_down);
+
         h.recyclerSeries.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
         h.btnAjouterSerie.setVisibility(isExpanded && editable ? View.VISIBLE : View.GONE);
 
-        h.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                if (expanded.contains(pos)) expanded.remove(pos);
-                else expanded.add(pos);
-                notifyItemChanged(pos);
-            }
+        h.itemView.setOnClickListener(v -> {
+            if (expanded.contains(pos)) expanded.remove(pos);
+            else expanded.add(pos);
+            notifyItemChanged(pos);
         });
 
         SerieAdapter serieAdapter = new SerieAdapter(
                 e.getSeries(),
                 editable,
                 trainingMode,
-                new SerieAdapter.OnSerieDeleteListener() {
-                    @Override public void onDelete(Serie s, int pSerie) {
-                        e.getSeries().remove(pSerie);
-                        notifyItemChanged(pos);
-                    }
+                (s, pSerie) -> {
+                    e.getSeries().remove(pSerie);
+                    notifyItemChanged(pos);
                 }
         );
 
         h.recyclerSeries.setLayoutManager(new LinearLayoutManager(h.itemView.getContext()));
         h.recyclerSeries.setAdapter(serieAdapter);
 
-        h.btnAjouterSerie.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                e.ajouterSerie(new Serie(0, 0));
-                notifyItemChanged(pos);
-            }
+        h.btnAjouterSerie.setOnClickListener(v -> {
+            e.ajouterSerie(new Serie(0, 0));
+            notifyItemChanged(pos);
         });
     }
 
@@ -120,7 +116,7 @@ public class ExerciceAdapter extends RecyclerView.Adapter<ExerciceAdapter.ViewHo
         TextView txtNom, txtResume;
         RecyclerView recyclerSeries;
         Button btnAjouterSerie;
-
+        ImageView imgIndicator;
         ViewHolder(@NonNull View v) {
             super(v);
             imgMiniature = v.findViewById(R.id.imgMiniatureEditor);
@@ -129,6 +125,7 @@ public class ExerciceAdapter extends RecyclerView.Adapter<ExerciceAdapter.ViewHo
             btnDelete = v.findViewById(R.id.btnDeleteExercice);
             recyclerSeries = v.findViewById(R.id.recyclerSeries);
             btnAjouterSerie = v.findViewById(R.id.btnAjouterSerie);
+            imgIndicator = v.findViewById(R.id.imgExpandIndicator);
         }
     }
 }

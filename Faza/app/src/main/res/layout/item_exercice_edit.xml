@@ -35,7 +35,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
-
+        <ImageView
+            android:id="@+id/imgExpandIndicator"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:padding="4dp"
+            android:src="@drawable/ic_arrow_drop_down"/>
         <ImageView
             android:id="@+id/btnDeleteExercice"
             android:layout_width="32dp"
