@@ -40,6 +40,9 @@ public class Entrainement {
     public void setProgramme(Programme programme) { this.programme = programme; }
 
     public double getChargeTotale() { return chargeTotale; }
+    public void setChargeTotale(double d){this.chargeTotale = d;}
     public int getNbSeries() { return nbSeries; }
+    public void setNbSeries(int nb) { this.nbSeries = nb; }
     public int getNbRepetitions() { return nbRepetitions; }
+    public void setNbRepetitions(int nbRepetitions) { this.nbRepetitions = nbRepetitions; }
 }

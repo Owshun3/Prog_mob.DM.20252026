@@ -75,8 +75,18 @@ public class Programme {
     public void setCommentaire(String commentaire) { this.commentaire = commentaire; }
 
     public double getChargeTotale() { return chargeTotale; }
+    public void setChargeTotale(double chargeTotale) {
+        this.chargeTotale = chargeTotale;
+    }
+
     public int getNbSeries() { return nbSeries; }
+    public void setNbSeries(int nbSeries) {
+        this.nbSeries = nbSeries;
+    }
     public int getNbRepetitions() { return nbRepetitions; }
+    public void setNbRepetitions(int nbRepetitions) {
+        this.nbRepetitions = nbRepetitions;
+    }
 
     public List<Exercice> getExercices() { return exercices; }
 }

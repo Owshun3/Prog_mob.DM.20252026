@@ -204,7 +204,10 @@ public class ProgrammeEditorFragment extends Fragment {
 
         btnAjouterExercice.setOnClickListener(v -> ouvrirSelectionExercice());
 
-        btnEnregistrer.setOnClickListener(v -> fermer());
+        btnEnregistrer.setOnClickListener(v -> {
+            ManagerGlobal.getInstance().getManagerProgramme().sauvegarderProgramme(programme);
+            fermer();
+        });
 
         if (mode == ProgrammeEditorMode.EDIT_LIBRARY) {
             btnSupprimer.setOnClickListener(v -> {

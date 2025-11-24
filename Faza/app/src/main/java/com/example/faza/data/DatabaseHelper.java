@@ -45,10 +45,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "theme TEXT," +
                 "photo_profil TEXT)");
 
-        db.execSQL("CREATE TABLE programme(" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "nom TEXT," +
-                "commentaire TEXT)");
+        db.execSQL(
+                "CREATE TABLE programme (" +
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        "nom TEXT NOT NULL," +
+                        "commentaire TEXT," +
+                        "type TEXT NOT NULL DEFAULT 'LIBRARY'," +
+                        "id_entrainement INTEGER," +
+                        "charge_totale REAL DEFAULT 0," +
+                        "nb_series INTEGER DEFAULT 0," +
+                        "nb_repetitions INTEGER DEFAULT 0" +
+                        ");"
+        );
 
         db.execSQL("CREATE TABLE exercice(" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
