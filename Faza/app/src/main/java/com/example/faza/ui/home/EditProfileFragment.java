@@ -118,7 +118,6 @@ public class EditProfileFragment extends Fragment {
     }
 
     private void initLaunchers() {
-
         cameraLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -171,7 +170,6 @@ public class EditProfileFragment extends Fragment {
     }
 
     private void saveProfile() {
-
         if (edtPseudo.getText().toString().trim().isEmpty()) {
             Toast.makeText(requireContext(), "Pseudo obligatoire", Toast.LENGTH_SHORT).show();
             return;
@@ -199,12 +197,10 @@ public class EditProfileFragment extends Fragment {
             Log.d("TEST_THEME3", "Theme depuis base = " + user.getTheme());
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
-        requireActivity().recreate();
 
         if (newPhotoUri != null) {user.setPhotoUri(newPhotoUri);}
 
         user.update(requireContext());
-
         Toast.makeText(requireContext(), "Profil mis à jour", Toast.LENGTH_SHORT).show();
         requireActivity().getSupportFragmentManager().popBackStack();
     }

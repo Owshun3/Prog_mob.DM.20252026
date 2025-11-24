@@ -105,7 +105,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return null;
         }
 
+        long id = c.getLong(c.getColumnIndexOrThrow("id"));
+
         User u = new User(
+                id,
                 c.getString(c.getColumnIndexOrThrow("nom")),
                 new Date(c.getLong(c.getColumnIndexOrThrow("date_naissance"))),
                 c.getInt(c.getColumnIndexOrThrow("taille_cm")),
@@ -118,4 +121,5 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         c.close();
         return u;
     }
+
 }

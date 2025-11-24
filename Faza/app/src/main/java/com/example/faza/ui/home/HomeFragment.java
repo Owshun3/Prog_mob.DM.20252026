@@ -177,18 +177,9 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private void showGraphDuration() {
-        buildGraph(i -> entrainements.get(i).getDureeMin(), "Durée (min)");
-    }
-
-    private void showGraphVolume() {
-        buildGraph(i -> 0f, "Volume (kg·rép)");
-    }
-
-    private void showGraphCount() {
-        buildGraph(i -> i + 1, "Séances");
-    }
-
+    private void showGraphDuration() { buildGraph(i -> entrainements.get(i).getDureeMin(), "Durée (min)"); }
+    private void showGraphVolume() { buildGraph(i -> 0f, "Volume (kg·rép)"); }
+    private void showGraphCount() { buildGraph(i -> i + 1, "Séances"); }
     private interface ValueExtractor { float getValue(int i); }
 
     private void buildGraph(ValueExtractor extractor, String label) {

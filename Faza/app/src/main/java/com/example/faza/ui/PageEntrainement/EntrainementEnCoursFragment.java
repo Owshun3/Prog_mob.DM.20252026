@@ -66,6 +66,13 @@ public class EntrainementEnCoursFragment extends Fragment {
         startChrono();
 
         btnTerminer.setOnClickListener(x -> {
+            long elapsedMs = SystemClock.elapsedRealtime() - startTime;
+            int dureeMin = (int) (elapsedMs / 60000L);
+            if (dureeMin < 1) dureeMin = 1;
+
+            entrainement.setDureeMin(dureeMin);
+            entrainement.setDateSeance(String.valueOf(System.currentTimeMillis()));
+
             ManagerGlobal.getInstance()
                     .getManagerEntrainement()
                             .sauvegarder(requireContext(),entrainement);
