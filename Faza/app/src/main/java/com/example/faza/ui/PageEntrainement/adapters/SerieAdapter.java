@@ -65,7 +65,7 @@ public class SerieAdapter extends RecyclerView.Adapter<SerieAdapter.ViewHolder> 
             }
 
             h.btnValider.setOnClickListener(v -> {
-                s.valider();
+                s.toggleValidee();
                 notifyItemChanged(pos);
             });
 

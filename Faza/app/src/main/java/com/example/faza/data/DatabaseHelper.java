@@ -1,136 +1,110 @@
 package com.example.faza.data;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.faza.data.entites.User;
+
+import java.util.Date;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
+
     private static DatabaseHelper instance;
 
-    private static final String DATABASE_NAME = "faizaDB";
-    private static final int DATABASE_VERSION = 3;
+    public static final String DB_NAME = "faza.db";
+    public static final int DB_VERSION = 1;
 
-    public static final String TABLE_USER = "user";
-    public static final String TABLE_ENTRAINEMENT = "entrainement";
-    public static final String TABLE_EXERCICE = "exercice";
-    public static final String TABLE_ENTRAINEMENT_EXERCICE = "entrainement_exercice";
-    public static final String TABLE_SERIE = "serie";
-    public static final String TABLE_PROGRAMME = "programme";
-    public static final String TABLE_PROGRAMME_EXERCICE = "programme_exercice";
+    public static final String T_USER = "user";
+    public static final String T_ENTRAINEMENT = "entrainement";
+    public static final String T_PROGRAMME = "programme";
+    public static final String T_EXERCICE = "exercice";
+    public static final String T_SERIE = "serie";
+    public static final String T_PROGRAMME_EXERCICE = "programme_exercice";
 
-    private static final String CREATE_USER =
-            "CREATE TABLE " + TABLE_USER + " (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "nom TEXT, " +
-                    "date_naissance TEXT, " +
-                    "taille_cm REAL, " +
-                    "poids_kg REAL, " +
-                    "unite_poids TEXT, " +
-                    "theme TEXT, " +
-                    "photo_profil TEXT, " +
-                    "date_creation TEXT);";
-
-    private static final String CREATE_ENTRAINEMENT =
-            "CREATE TABLE " + TABLE_ENTRAINEMENT + " (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "id_user INTEGER NOT NULL, " +
-                    "date_seance TEXT, " +
-                    "duree_min INTEGER, " +
-                    "charge_totale REAL, " +
-                    "nb_series INTEGER, " +
-                    "nb_repetitions INTEGER, " +
-                    "photo_fin TEXT, " +
-                    "commentaire TEXT, " +
-                    "FOREIGN KEY(id_user) REFERENCES " + TABLE_USER + "(id));";
-
-    private static final String CREATE_EXERCICE =
-            "CREATE TABLE " + TABLE_EXERCICE + " (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "nom TEXT NOT NULL UNIQUE, " +
-                    "groupe_principal TEXT, " +
-                    "groupe_secondaire TEXT, " +
-                    "description TEXT, " +
-                    "url_video TEXT, " +
-                    "miniature TEXT);";
-
-    private static final String CREATE_ENTRAINEMENT_EXERCICE =
-            "CREATE TABLE " + TABLE_ENTRAINEMENT_EXERCICE + " (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "id_entrainement INTEGER NOT NULL, " +
-                    "id_exercice INTEGER NOT NULL, " +
-                    "ordre INTEGER, " +
-                    "FOREIGN KEY(id_entrainement) REFERENCES " + TABLE_ENTRAINEMENT + "(id), " +
-                    "FOREIGN KEY(id_exercice) REFERENCES " + TABLE_EXERCICE + "(id));";
-
-    private static final String CREATE_SERIE =
-            "CREATE TABLE " + TABLE_SERIE + " (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "id_entrainement_exercice INTEGER NOT NULL, " +
-                    "numero INTEGER, " +
-                    "etiquette TEXT, " +
-                    "poids REAL, " +
-                    "repetitions INTEGER, " +
-                    "rir INTEGER, " +
-                    "rest_pause INTEGER, " +
-                    "validee INTEGER, " +
-                    "FOREIGN KEY(id_entrainement_exercice) REFERENCES " + TABLE_ENTRAINEMENT_EXERCICE + "(id));";
-
-    private static final String CREATE_PROGRAMME =
-            "CREATE TABLE " + TABLE_PROGRAMME + " (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "nom TEXT NOT NULL, " +
-                    "description TEXT, " +
-                    "date_creation TEXT);";
-
-    private static final String CREATE_PROGRAMME_EXERCICE =
-            "CREATE TABLE " + TABLE_PROGRAMME_EXERCICE + " (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "id_programme INTEGER NOT NULL, " +
-                    "id_exercice INTEGER NOT NULL, " +
-                    "nb_series_defaut INTEGER, " +
-                    "nb_reps_defaut INTEGER, " +
-                    "poids_min REAL, " +
-                    "poids_max REAL, " +
-                    "FOREIGN KEY(id_programme) REFERENCES " + TABLE_PROGRAMME + "(id), " +
-                    "FOREIGN KEY(id_exercice) REFERENCES " + TABLE_EXERCICE + "(id));";
-
-    public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    public static synchronized DatabaseHelper getInstance(Context ctx) {
+        if (instance == null) instance = new DatabaseHelper(ctx.getApplicationContext());
+        return instance;
     }
 
-    public static synchronized DatabaseHelper getInstance(Context context) {
-        if (instance == null) {
-            instance = new DatabaseHelper(context.getApplicationContext());
-        }
-        return instance;
+    private DatabaseHelper(Context ctx) {
+        super(ctx, DB_NAME, null, DB_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_USER);
-        db.execSQL(CREATE_ENTRAINEMENT);
-        db.execSQL(CREATE_EXERCICE);
-        db.execSQL(CREATE_ENTRAINEMENT_EXERCICE);
-        db.execSQL(CREATE_SERIE);
-        db.execSQL(CREATE_PROGRAMME);
-        db.execSQL(CREATE_PROGRAMME_EXERCICE);
+
+        db.execSQL("CREATE TABLE user(" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "nom TEXT," +
+                "date_naissance INTEGER," +
+                "taille_cm INTEGER," +
+                "poids_kg REAL," +
+                "unite_poids TEXT," +
+                "theme TEXT," +
+                "photo_profil TEXT)");
+
+        db.execSQL("CREATE TABLE programme(" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "nom TEXT," +
+                "commentaire TEXT)");
+
+        db.execSQL("CREATE TABLE exercice(" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "nom TEXT," +
+                "groupe_principal TEXT," +
+                "groupe_secondaire TEXT," +
+                "description TEXT," +
+                "url_video TEXT," +
+                "miniature TEXT)");
+
+        db.execSQL("CREATE TABLE programme_exercice(" +
+                "id_programme INTEGER," +
+                "id_exercice INTEGER," +
+                "ordre INTEGER)");
+
+        db.execSQL("CREATE TABLE serie(" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "id_exercice INTEGER," +
+                "poids REAL," +
+                "repetitions INTEGER," +
+                "rir INTEGER," +
+                "validee INTEGER)");
+
+        db.execSQL("CREATE TABLE entrainement(" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "date_seance TEXT," +
+                "duree_min INTEGER," +
+                "photo_fin TEXT," +
+                "charge_totale REAL," +
+                "nb_series INTEGER," +
+                "nb_repetitions INTEGER)");
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROGRAMME_EXERCICE);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROGRAMME);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SERIE);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ENTRAINEMENT_EXERCICE);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_EXERCICE);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ENTRAINEMENT);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
-        onCreate(db);
-    }
+    public void onUpgrade(SQLiteDatabase db, int oldV, int newV) {}
 
-    @Override
-    public void onConfigure(SQLiteDatabase db) {
-        super.onConfigure(db);
-        db.setForeignKeyConstraintsEnabled(true);
+    public User getUser() {
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor c = db.rawQuery("SELECT * FROM user LIMIT 1", null);
+        if (!c.moveToFirst()) {
+            c.close();
+            return null;
+        }
+
+        User u = new User(
+                c.getString(c.getColumnIndexOrThrow("nom")),
+                new Date(c.getLong(c.getColumnIndexOrThrow("date_naissance"))),
+                c.getInt(c.getColumnIndexOrThrow("taille_cm")),
+                c.getFloat(c.getColumnIndexOrThrow("poids_kg")),
+                c.getString(c.getColumnIndexOrThrow("unite_poids")),
+                c.getString(c.getColumnIndexOrThrow("theme")),
+                c.getString(c.getColumnIndexOrThrow("photo_profil"))
+        );
+
+        c.close();
+        return u;
     }
 }

@@ -55,7 +55,7 @@ public class StatistiquesFragment extends Fragment {
 
         for (Entrainement e : list) {
             totalMin += e.getDureeMin();
-            totalKg  += e.getVolumeTotal();
+            totalKg  += e.getChargeTotale();
         }
 
         txtYearNb.setText(nb + "");

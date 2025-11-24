@@ -4,57 +4,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Programme {
+
     private long id;
     private long idUser;
     private String nom;
+    private String commentaire;
+
     private double chargeTotale;
     private int nbSeries;
     private int nbRepetitions;
-    private String commentaire;
-    private List<Exercice> exercices;
 
-    public Programme() {
-        exercices = new ArrayList<>();
+    private final List<Exercice> exercices = new ArrayList<>();
+
+    public Programme() {}
+
+    public Programme copieDeep() {
+        Programme p = new Programme();
+        p.nom = nom;
+        p.commentaire = commentaire;
+        for (Exercice e : exercices) {
+            p.exercices.add(e.copie());
+        }
+        return p;
     }
 
-    public Programme(long idUser, String nom, String commentaire) {
-        this.idUser = idUser;
-        this.nom = nom;
-        this.chargeTotale = 0;
-        this.nbSeries = 0;
-        this.nbRepetitions = 0;
-        this.commentaire = commentaire;
-        this.exercices = new ArrayList<>();
+    public void recalculerStats() {
+        chargeTotale = 0;
+        nbSeries = 0;
+        nbRepetitions = 0;
+
+        for (Exercice e : exercices) {
+            for (Serie s : e.getSeries()) {
+                chargeTotale += s.getPoids() * s.getRepetitions();
+                nbSeries++;
+                nbRepetitions += s.getRepetitions();
+            }
+        }
     }
-
-    public void insertExercice(Exercice exercice) {
-        if (exercice == null) return;
-        exercices.add(exercice);
-        recalculerStats();
-    }
-
-    public void updateExercice(int index, Exercice exercice) {
-        if (index < 0 || index >= exercices.size() || exercice == null) return;
-        exercices.set(index, exercice);
-        recalculerStats();
-    }
-
-    public void deleteExercice(int index) {
-        if (index < 0 || index >= exercices.size()) return;
-        exercices.remove(index);
-        recalculerStats();
-    }
-
-    public Exercice getExercice(int index) {
-        if (index < 0 || index >= exercices.size()) return null;
-        return exercices.get(index);
-    }
-
-    private void recalculerStats() {
-        calculerChargeEtStats();
-    }
-
-
 
     public void calculerChargeEtStats() {
         double total = 0;
@@ -74,60 +60,23 @@ public class Programme {
         this.nbRepetitions = totalReps;
     }
 
+    public void ajouterExercice(Exercice e) { exercices.add(e); }
+
     public long getId() { return id; }
     public void setId(long id) { this.id = id; }
 
     public long getIdUser() { return idUser; }
     public void setIdUser(long idUser) { this.idUser = idUser; }
+
     public String getNom() { return nom; }
     public void setNom(String nom) { this.nom = nom; }
-    public double getChargeTotale() { return chargeTotale; }
-    public void setChargeTotale(double chargeTotale) { this.chargeTotale = chargeTotale; }
-    public int getNbSeries() { return nbSeries; }
-    public void setNbSeries(int nbSeries) { this.nbSeries = nbSeries; }
-    public int getNbRepetitions() { return nbRepetitions; }
-    public void setNbRepetitions(int nbRepetitions) { this.nbRepetitions = nbRepetitions; }
+
     public String getCommentaire() { return commentaire; }
     public void setCommentaire(String commentaire) { this.commentaire = commentaire; }
+
+    public double getChargeTotale() { return chargeTotale; }
+    public int getNbSeries() { return nbSeries; }
+    public int getNbRepetitions() { return nbRepetitions; }
+
     public List<Exercice> getExercices() { return exercices; }
-    public void setExercices(List<Exercice> exercices) { this.exercices = exercices; }
-
-    public void ajouterExercice(Exercice e) {
-        exercices.add(e);
-    }
-
-    public String toCSV() {
-        if (id == -1 || nom == null) {
-            throw new IllegalArgumentException("Erreur: toCSV() d’un programme invalide (id ou nom manquant)");
-        }
-        return id + ";" +
-                idUser + ";" +
-                nom + ";" +
-                chargeTotale + ";" +
-                nbSeries + ";" +
-                nbRepetitions + ";" +
-                (commentaire != null ? commentaire : "");
-    }
-
-    public static Programme fromCSV(String line) {
-        String[] champs = line.split(";", -1);
-        if (champs.length != 7) {
-            throw new IllegalArgumentException("Erreur: ligne CSV invalide pour Programme (8 champs attendus): " + line);
-        }
-
-        try {
-            Programme p = new Programme();
-            p.setId(Long.parseLong(champs[0]));
-            p.setIdUser(Long.parseLong(champs[1]));
-            p.setNom(champs[2]);
-            p.setChargeTotale(Double.parseDouble(champs[3]));
-            p.setNbSeries(Integer.parseInt(champs[4]));
-            p.setNbRepetitions(Integer.parseInt(champs[5]));
-            p.setCommentaire(champs[6]);
-            return p;
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Erreur de parsing dans la ligne CSV pour Programme: " + line, e);
-        }
-    }
-
 }

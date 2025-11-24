@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExerciceCsvLoader {
-
+    /*
     public static List<Exercice> chargerDepuisRaw(Context context) {
         List<Exercice> exercices = new ArrayList<>();
 
@@ -60,4 +60,6 @@ public class ExerciceCsvLoader {
             return null;
         }
     }
+
+     */
 }

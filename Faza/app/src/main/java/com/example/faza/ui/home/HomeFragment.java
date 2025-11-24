@@ -18,6 +18,7 @@ import androidx.navigation.Navigation;
 import com.example.faza.R;
 import com.example.faza.data.entites.Entrainement;
 import com.example.faza.data.entites.User;
+import com.example.faza.data.managers.ManagerGlobal;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -144,7 +145,9 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadEntrainements() {
-        entrainements = Entrainement.getAll(requireContext());
+        entrainements = ManagerGlobal.getInstance()
+                .getManagerEntrainement()
+                .getAll(requireContext());
 
         int total = 0;
         for (Entrainement e : entrainements) {

@@ -68,7 +68,7 @@ public class EntrainementEnCoursFragment extends Fragment {
         btnTerminer.setOnClickListener(x -> {
             ManagerGlobal.getInstance()
                     .getManagerEntrainement()
-                    .sauvegarderEntrainement(entrainement);
+                            .sauvegarder(requireContext(),entrainement);
             Toast.makeText(requireContext(), "Séance sauvegardée", Toast.LENGTH_SHORT).show();
             getParentFragmentManager().popBackStack();
             View full = requireActivity().findViewById(R.id.containerFragmentFullScreenEntrainement);

@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatDelegate;
 import com.example.faza.R;
+import com.example.faza.data.DatabaseHelper;
 import com.example.faza.data.entites.User;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -56,7 +57,7 @@ public class EditProfileFragment extends Fragment {
 
         btnSave = view.findViewById(R.id.btnSaveProfile);
 
-        user = User.get(requireContext());
+        user = DatabaseHelper.getInstance(requireContext()).getUser();
 
         edtPseudo.setText(user.getPseudo());
         edtTaille.setText(String.valueOf(user.getTaille()));
