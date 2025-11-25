@@ -205,6 +205,19 @@ public class ProgrammeEditorFragment extends Fragment {
         btnAjouterExercice.setOnClickListener(v -> ouvrirSelectionExercice());
 
         btnEnregistrer.setOnClickListener(v -> {
+            String nom = editNom.getText().toString().trim();
+            if (nom.isEmpty()) {
+                editNom.setError("Le nom ne peut pas être vide");
+                return;
+            }
+
+            for (Programme p2 : ManagerGlobal.getInstance().getManagerProgramme().getProgrammes()) {
+                if (p2 != programme && p2.getNom() != null &&
+                        p2.getNom().trim().equalsIgnoreCase(nom)) {
+                    editNom.setError("Un programme existe déjà avec ce nom");
+                    return;
+                }
+            }
             ManagerGlobal.getInstance().getManagerProgramme().sauvegarderProgramme(programme);
             fermer();
         });

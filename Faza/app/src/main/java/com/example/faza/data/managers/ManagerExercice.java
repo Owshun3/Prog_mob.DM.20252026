@@ -8,6 +8,8 @@ import java.util.List;
 
 public class ManagerExercice {
 
+    private long nextCatalogueId = 1;
+
     private final HashMap<String, Exercice> exercices = new HashMap<>();
 
     public void clear() {
@@ -16,6 +18,7 @@ public class ManagerExercice {
 
     public void ajouterSiAbsent(Exercice e) {
         if (!exercices.containsKey(e.getNom())) {
+            e.setIdCatalogue(nextCatalogueId++);
             exercices.put(e.getNom(), e);
         }
     }

@@ -17,9 +17,7 @@ import java.util.List;
 
 public class ExerciceSelectionAdapter extends RecyclerView.Adapter<ExerciceSelectionAdapter.ViewHolder> {
 
-    public interface OnExerciceClickListener {
-        void onClick(Exercice e);
-    }
+    public interface OnExerciceClickListener { void onClick(Exercice e); }
 
     private final List<Exercice> items = new ArrayList<>();
     private final OnExerciceClickListener listener;

@@ -7,6 +7,7 @@ public class Exercice {
 
     private long id;
     private long idProgramme;
+    private long idCatalogue;
 
     private String nom;
     private String groupePrincipal;
@@ -22,6 +23,7 @@ public class Exercice {
 
     public Exercice copie() {
         Exercice e = new Exercice();
+        e.setIdCatalogue(this.idCatalogue);
         e.nom = nom;
         e.groupePrincipal = groupePrincipal;
         e.groupeSecondaire = groupeSecondaire;
@@ -89,6 +91,9 @@ public class Exercice {
 
     public String getUrlVideo() { return urlVideo; }
     public void setUrlVideo(String urlVideo) { this.urlVideo = urlVideo; }
+
+    public long getIdCatalogue() { return idCatalogue; }
+    public void setIdCatalogue(long idCatalogue) { this.idCatalogue = idCatalogue; }
 
     public boolean isUiExpanded() { return uiExpanded; }
     public boolean isCopie(){return copie;}

@@ -1,5 +1,7 @@
 package com.example.faza.ui.PageEntrainement.adapters;
 
+import static androidx.recyclerview.widget.DiffUtil.DiffResult.NO_POSITION;
+
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,7 +53,10 @@ public class ExerciceAdapter extends RecyclerView.Adapter<ExerciceAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ExerciceAdapter.ViewHolder h, @SuppressLint("RecyclerView") int pos) {
-        Exercice e = exercices.get(pos);
+        int realPos = h.getBindingAdapterPosition();
+        if (realPos == RecyclerView.NO_POSITION) return;
+
+        Exercice e = exercices.get(realPos);
 
         h.txtNom.setText(e.getNom());
         h.txtResume.setText(e.getResume());
@@ -67,33 +72,42 @@ public class ExerciceAdapter extends RecyclerView.Adapter<ExerciceAdapter.ViewHo
 
         if (editable && deleteListener != null) {
             h.btnDelete.setVisibility(View.VISIBLE);
-            h.btnDelete.setOnClickListener(v -> deleteListener.onDelete(e, pos));
+            h.btnDelete.setOnClickListener(v -> {
+                int rp = h.getBindingAdapterPosition();
+                if (rp != RecyclerView.NO_POSITION) {
+                    deleteListener.onDelete(e, rp);
+                }
+            });
         } else {
             h.btnDelete.setVisibility(View.GONE);
         }
 
-        boolean isExpanded = expanded.contains(pos);
-        if (isExpanded)
-            h.imgIndicator.setImageResource(R.drawable.ic_arrow_drop_up);
-        else
-            h.imgIndicator.setImageResource(R.drawable.ic_arrow_drop_down);
+        boolean isExpanded = expanded.contains(realPos);
+        h.imgIndicator.setImageResource(
+                isExpanded ? R.drawable.ic_arrow_drop_up : R.drawable.ic_arrow_drop_down
+        );
 
         h.recyclerSeries.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
         h.btnAjouterSerie.setVisibility(isExpanded && editable ? View.VISIBLE : View.GONE);
 
         h.itemView.setOnClickListener(v -> {
-            if (expanded.contains(pos)) expanded.remove(pos);
-            else expanded.add(pos);
-            notifyItemChanged(pos);
+            int rp = h.getBindingAdapterPosition();
+            if (rp == RecyclerView.NO_POSITION) return;
+
+            if (expanded.contains(rp)) expanded.remove(rp);
+            else expanded.add(rp);
+
+            notifyItemChanged(rp);
         });
 
         SerieAdapter serieAdapter = new SerieAdapter(
                 e.getSeries(),
                 editable,
                 trainingMode,
-                (s, pSerie) -> {
-                    e.getSeries().remove(pSerie);
-                    notifyItemChanged(pos);
+                (s, seriePos) -> {
+                    e.getSeries().remove(seriePos);
+                    int rp = h.getBindingAdapterPosition();
+                    if (rp != RecyclerView.NO_POSITION) notifyItemChanged(rp);
                 }
         );
 
@@ -102,7 +116,8 @@ public class ExerciceAdapter extends RecyclerView.Adapter<ExerciceAdapter.ViewHo
 
         h.btnAjouterSerie.setOnClickListener(v -> {
             e.ajouterSerie(new Serie(0, 0));
-            notifyItemChanged(pos);
+            int rp = h.getBindingAdapterPosition();
+            if (rp != RecyclerView.NO_POSITION) notifyItemChanged(rp);
         });
     }
 

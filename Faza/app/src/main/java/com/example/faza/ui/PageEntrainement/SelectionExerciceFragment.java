@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -131,23 +132,51 @@ public class SelectionExerciceFragment extends Fragment {
 
 
     private void onExerciceChoisi(Exercice base) {
-        Exercice copie = base.copie();
+
+        Programme p = null;
+
         if (mode == SelectionExerciceMode.PROGRAMME) {
-            Programme p = ManagerGlobal.getInstance().getManagerProgramme().getProgrammeById(programmeId);
-            if (p != null) {
-                p.ajouterExercice(copie);
-            }
+            p = ManagerGlobal.getInstance()
+                    .getManagerProgramme()
+                    .getProgrammeById(programmeId);
         } else if (mode == SelectionExerciceMode.ENTRAINEMENT) {
-            Entrainement e = ManagerGlobal.getInstance().getManagerEntrainement().getById(entrainementId);
+            Entrainement e = ManagerGlobal.getInstance()
+                    .getManagerEntrainement()
+                    .getById(entrainementId);
+
             if (e != null) {
-                Programme p = e.getProgramme();
+                p = e.getProgramme();
                 if (p == null) {
                     p = new Programme();
                     e.setProgramme(p);
                 }
-                p.ajouterExercice(copie);
             }
         }
+
+        if (p == null) {
+            getParentFragmentManager().popBackStack();
+            return;
+        }
+
+        // Vérification anti-doublon
+        for (Exercice ex : p.getExercices()) {
+            if (ex.getIdCatalogue() == base.getIdCatalogue()) {
+                Toast.makeText(getContext(),
+                        "Cet exercice est déjà dans le programme",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
+        // Création de la copie (copie() copie déjà idCatalogue)
+        Exercice copie = base.copie();
+
+        // PAS besoin de re-set idCatalogue !
+        // copie.setIdCatalogue(base.getIdCatalogue());  // <- facultatif mais OK
+
+        p.ajouterExercice(copie);
+
         getParentFragmentManager().popBackStack();
     }
+
 }

@@ -17,6 +17,10 @@ import com.example.faza.data.entites.Entrainement;
 import com.example.faza.data.entites.Programme;
 import com.example.faza.data.managers.ManagerGlobal;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class EntrainementEnCoursFragment extends Fragment {
 
     private static final String ARG_ID = "id_entrainement";
@@ -71,7 +75,10 @@ public class EntrainementEnCoursFragment extends Fragment {
             if (dureeMin < 1) dureeMin = 1;
 
             entrainement.setDureeMin(dureeMin);
-            entrainement.setDateSeance(String.valueOf(System.currentTimeMillis()));
+            String date = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                    .format(new Date());
+
+            entrainement.setDateSeance(date);
 
             ManagerGlobal.getInstance()
                     .getManagerEntrainement()

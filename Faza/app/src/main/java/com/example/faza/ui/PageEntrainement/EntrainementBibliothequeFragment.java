@@ -41,7 +41,7 @@ public class EntrainementBibliothequeFragment extends Fragment {
         btnAjouter.setOnClickListener(x -> {
             Programme p = ManagerGlobal.getInstance()
                     .getManagerProgramme()
-                    .creerProgramme(requireContext(), "Nouveau programme");
+                    .creerProgramme(requireContext(), "");
             ouvrirProgramme(p.getId(), ProgrammeEditorMode.EDIT_LIBRARY);
         });
 
