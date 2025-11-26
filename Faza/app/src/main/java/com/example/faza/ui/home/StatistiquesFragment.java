@@ -48,7 +48,6 @@ public class StatistiquesFragment extends Fragment {
     }
 
     private int calculerVolumeValide(Entrainement e) {
-
         if (e.getProgramme() == null) return 0;
 
         int volume = 0;
