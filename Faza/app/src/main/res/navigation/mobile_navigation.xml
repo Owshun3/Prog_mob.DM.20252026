@@ -19,13 +19,23 @@
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="com.example.faza.ui.notifications.NotificationsFragment"
+        android:name="com.example.faza.ui.MurSeance.MurSeanceFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_mur_seance" />
 
     <fragment
         android:id="@+id/navigation_profile_edit"
         android:name="com.example.faza.ui.home.EditProfileFragment"
         android:label="Modifier le profil"
         tools:layout="@layout/fragment_edit_profile" />
+
+    <fragment
+        android:id="@+id/navigation_mur_seance_detail"
+        android:name="com.example.faza.ui.MurSeance.MurSeanceDetailFragment"
+        android:label="Détail de séance"
+        tools:layout="@layout/fragment_murseance_detail">
+        <argument
+            android:name="entrainementId"
+            app:argType="long" />
+    </fragment>
 </navigation>

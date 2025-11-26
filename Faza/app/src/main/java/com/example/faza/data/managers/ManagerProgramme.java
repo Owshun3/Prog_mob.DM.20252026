@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.example.faza.data.DatabaseHelper;
 import com.example.faza.data.entites.Exercice;
 import com.example.faza.data.entites.Programme;
+import com.example.faza.data.entites.Serie;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -152,5 +153,74 @@ public class ManagerProgramme {
 
 
         db.update("programme", values, "id=?", new String[]{String.valueOf(p.getId())});
+    }
+
+    public Programme chargerProgrammeSessionComplet(Context ctx, long idProgramme) {
+        SQLiteDatabase db = DatabaseHelper.getInstance(ctx).getReadableDatabase();
+
+        Programme p = new Programme();
+
+        Cursor c = db.rawQuery(
+                "SELECT nom, commentaire, charge_totale, nb_series, nb_repetitions " +
+                        "FROM programme WHERE id=?",
+                new String[]{String.valueOf(idProgramme)}
+        );
+
+        if (!c.moveToFirst()) {
+            c.close();
+            return p;
+        }
+
+        p.setId(idProgramme);
+        p.setNom(c.getString(0));
+        p.setCommentaire(c.getString(1));
+        p.setChargeTotale(c.getDouble(2));
+        p.setNbSeries(c.getInt(3));
+        p.setNbRepetitions(c.getInt(4));
+        c.close();
+
+        Cursor ce = db.rawQuery(
+                "SELECT id, nom, groupe_principal, groupe_secondaire, miniature, url_video " +
+                        "FROM exercice ex " +
+                        "JOIN programme_exercice pe ON ex.id = pe.id_exercice " +
+                        "WHERE pe.id_programme=? ORDER BY pe.ordre ASC",
+                new String[]{String.valueOf(idProgramme)}
+        );
+
+        while (ce.moveToNext()) {
+            Exercice e = new Exercice();
+
+            long idEx = ce.getLong(0);
+            e.setId(idEx);
+            e.setNom(ce.getString(1));
+            e.setGroupePrincipal(ce.getString(2));
+            e.setGroupeSecondaire(ce.getString(3));
+            e.setMiniature(ce.getString(4));
+            e.setUrlVideo(ce.getString(5));
+
+            Cursor cs = db.rawQuery(
+                    "SELECT id, poids, repetitions, rir, validee " +
+                            "FROM serie WHERE id_exercice=?",
+                    new String[]{String.valueOf(idEx)}
+            );
+
+            while (cs.moveToNext()) {
+                Serie s = new Serie(
+                        cs.getDouble(1),
+                        cs.getInt(2)
+                );
+                s.setId(cs.getLong(0));
+                s.setRir(cs.getInt(3));
+                s.setValidee(cs.getInt(4) == 1);
+
+                e.getSeries().add(s);
+            }
+            cs.close();
+
+            p.getExercices().add(e);
+        }
+        ce.close();
+
+        return p;
     }
 }

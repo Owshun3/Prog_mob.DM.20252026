@@ -204,12 +204,46 @@ public class ManagerEntrainement {
     }
 
 
-    public Entrainement getById(long id) {
+    public Entrainement getById(Context ctx, long id) {
+
         for (Entrainement e : cache) {
             if (e.getId() == id) return e;
         }
-        return null;
+
+        SQLiteDatabase db = DatabaseHelper.getInstance(ctx).getReadableDatabase();
+
+        Cursor c = db.rawQuery(
+                "SELECT id, date_seance, duree_min, photo_fin, charge_totale, nb_series, nb_repetitions " +
+                        "FROM " + DatabaseHelper.T_ENTRAINEMENT + " WHERE id=? LIMIT 1",
+                new String[]{String.valueOf(id)}
+        );
+
+        if (!c.moveToFirst()) {
+            c.close();
+            return null;
+        }
+
+        Entrainement e = new Entrainement();
+        e.setId(id);
+        e.setDateSeance(c.getString(1));
+        e.setDureeMin(c.getInt(2));
+        e.setPhotoFin(c.getString(3));
+        e.setChargeTotale(c.getDouble(4));
+        e.setNbSeries(c.getInt(5));
+        e.setNbRepetitions(c.getInt(6));
+        c.close();
+
+        Programme p = ManagerGlobal.getInstance()
+                .getManagerProgramme()
+                .chargerProgrammeSessionComplet(ctx, id);
+
+        e.setProgramme(p);
+
+        cache.add(e);
+
+        return e;
     }
+
 
     public List<Entrainement> getAll(Context ctx) {
         ArrayList<Entrainement> list = new ArrayList<>();
@@ -235,7 +269,7 @@ public class ManagerEntrainement {
                 e.setNbSeries(c.getInt(5));
                 e.setNbRepetitions(c.getInt(6));
 
-                Programme p = chargerProgrammeSessionHeader(db, idEntrainement);
+                Programme p = chargerProgrammeSessionComplet(ctx, idEntrainement);
                 e.setProgramme(p);
 
                 list.add(e);
@@ -247,21 +281,21 @@ public class ManagerEntrainement {
         return list;
     }
 
-    private Programme chargerProgrammeSessionHeader(SQLiteDatabase db, long idEntrainement) {
-        Programme p = new Programme();
+    public Programme chargerProgrammeSessionComplet(Context ctx, long idEntrainement) {
+        SQLiteDatabase db = DatabaseHelper.getInstance(ctx).getReadableDatabase();
 
         Cursor c = db.rawQuery(
                 "SELECT id, nom, commentaire, charge_totale, nb_series, nb_repetitions " +
-                        "FROM " + DatabaseHelper.T_PROGRAMME +
-                        " WHERE type='SESSION' AND id_entrainement=? LIMIT 1",
+                        "FROM programme WHERE type='SESSION' AND id_entrainement=? LIMIT 1",
                 new String[]{String.valueOf(idEntrainement)}
         );
 
         if (!c.moveToFirst()) {
             c.close();
-            return p;
+            return new Programme();
         }
 
+        Programme p = new Programme();
         long idProgramme = c.getLong(0);
         p.setId(idProgramme);
         p.setNom(c.getString(1));
@@ -270,6 +304,51 @@ public class ManagerEntrainement {
         p.setNbSeries(c.getInt(4));
         p.setNbRepetitions(c.getInt(5));
         c.close();
+
+        Cursor ce = db.rawQuery(
+                "SELECT e.id, e.nom, e.groupe_principal, e.groupe_secondaire, e.miniature, e.url_video " +
+                        "FROM programme_exercice pe " +
+                        "JOIN exercice e ON e.id = pe.id_exercice " +
+                        "WHERE pe.id_programme=? ORDER BY pe.ordre",
+                new String[]{String.valueOf(idProgramme)}
+        );
+
+        while (ce.moveToNext()) {
+            Exercice ex = new Exercice();
+            long idExo = ce.getLong(0);
+
+            ex.setId(idExo);
+            ex.setNom(ce.getString(1));
+            ex.setGroupePrincipal(ce.getString(2));
+            ex.setGroupeSecondaire(ce.getString(3));
+            ex.setMiniature(ce.getString(4));
+            ex.setUrlVideo(ce.getString(5));
+
+            Cursor cs = db.rawQuery(
+                    "SELECT id, poids, repetitions, rir, validee " +
+                            "FROM serie WHERE id_exercice=?",
+                    new String[]{String.valueOf(idExo)}
+            );
+
+            while (cs.moveToNext()) {
+                boolean valid = cs.getInt(4) == 1;
+                if (!valid) continue;
+
+                Serie s = new Serie(
+                        cs.getDouble(1),
+                        cs.getInt(2)
+                );
+                s.setId(cs.getLong(0));
+                s.setRir(cs.getInt(3));
+                s.setValidee(true);
+
+                ex.getSeries().add(s);
+            }
+            cs.close();
+
+            p.getExercices().add(ex);
+        }
+        ce.close();
 
         return p;
     }

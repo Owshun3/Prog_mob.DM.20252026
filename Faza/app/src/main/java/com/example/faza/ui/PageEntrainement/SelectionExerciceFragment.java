@@ -142,7 +142,7 @@ public class SelectionExerciceFragment extends Fragment {
         } else if (mode == SelectionExerciceMode.ENTRAINEMENT) {
             Entrainement e = ManagerGlobal.getInstance()
                     .getManagerEntrainement()
-                    .getById(entrainementId);
+                    .getById(requireContext(),entrainementId);
 
             if (e != null) {
                 p = e.getProgramme();
@@ -158,7 +158,6 @@ public class SelectionExerciceFragment extends Fragment {
             return;
         }
 
-        // Vérification anti-doublon
         for (Exercice ex : p.getExercices()) {
             if (ex.getIdCatalogue() == base.getIdCatalogue()) {
                 Toast.makeText(getContext(),
@@ -168,11 +167,9 @@ public class SelectionExerciceFragment extends Fragment {
             }
         }
 
-        // Création de la copie (copie() copie déjà idCatalogue)
         Exercice copie = base.copie();
 
-        // PAS besoin de re-set idCatalogue !
-        // copie.setIdCatalogue(base.getIdCatalogue());  // <- facultatif mais OK
+        copie.setIdCatalogue(base.getIdCatalogue());
 
         p.ajouterExercice(copie);
 

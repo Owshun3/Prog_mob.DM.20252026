@@ -9,8 +9,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.example.faza.R;
 import com.example.faza.data.entites.Entrainement;
+import com.example.faza.data.entites.Exercice;
+import com.example.faza.data.entites.Serie;
 import com.example.faza.data.managers.ManagerGlobal;
 import org.jspecify.annotations.NonNull;
+import java.util.Calendar;
 import java.util.List;
 
 public class StatistiquesFragment extends Fragment {
@@ -44,27 +47,70 @@ public class StatistiquesFragment extends Fragment {
         return v;
     }
 
+    private int calculerVolumeValide(Entrainement e) {
+
+        if (e.getProgramme() == null) return 0;
+
+        int volume = 0;
+
+        for (Exercice ex : e.getProgramme().getExercices()) {
+            for (Serie s : ex.getSeries()) {
+                if (s.isValidee()) {
+                    volume += s.getPoids() * s.getRepetitions();
+                }
+            }
+        }
+
+        return volume;
+    }
+
+    private int extraireAnnee(String date) {
+        if (date == null || date.isEmpty()) return -1;
+
+        try {
+            long ts = Long.parseLong(date);
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(ts);
+            return cal.get(Calendar.YEAR);
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
     private void updateStats() {
 
         List<Entrainement> list =
                 ManagerGlobal.getInstance().getManagerEntrainement().getAll(requireContext());
 
-        int nb = list.size();
-        int totalMin = 0;
-        int totalKg = 0;
+        int currentYear = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);
+
+        int nbThisYear = 0;
+        int minThisYear = 0;
+        int kgThisYear = 0;
+
+        int nbAll = list.size();
+        int minAll = 0;
+        int kgAll = 0;
 
         for (Entrainement e : list) {
-            totalMin += e.getDureeMin();
-            totalKg  += e.getChargeTotale();
+            int volumeValide = calculerVolumeValide(e);
+            minAll += e.getDureeMin();
+            kgAll += volumeValide;
+            int yearSeance = extraireAnnee(e.getDateSeance());
+            if (yearSeance == currentYear) {
+                nbThisYear++;
+                minThisYear += e.getDureeMin();
+                kgThisYear += volumeValide;
+            }
         }
 
-        txtYearNb.setText(nb + "");
-        txtYearTime.setText(totalMin + " min");
-        txtYearVolume.setText(totalKg + " kg");
+        txtYearNb.setText(String.valueOf(nbThisYear));
+        txtYearTime.setText(minThisYear + " min");
+        txtYearVolume.setText(kgThisYear + " kg");
 
-        txtAllNb.setText(nb + "");
-        txtAllTime.setText(totalMin + " min");
-        txtAllVolume.setText(totalKg + " kg");
+        txtAllNb.setText(String.valueOf(nbAll));
+        txtAllTime.setText(minAll + " min");
+        txtAllVolume.setText(kgAll + " kg");
 
         txtBench.setText("0 kg");
         txtSquat.setText("0 kg");

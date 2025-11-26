@@ -14,7 +14,9 @@ import androidx.fragment.app.Fragment;
 
 import com.example.faza.R;
 import com.example.faza.data.entites.Entrainement;
+import com.example.faza.data.entites.Exercice;
 import com.example.faza.data.entites.Programme;
+import com.example.faza.data.entites.Serie;
 import com.example.faza.data.managers.ManagerGlobal;
 
 import java.text.SimpleDateFormat;
@@ -46,7 +48,7 @@ public class EntrainementEnCoursFragment extends Fragment {
     public void onCreate(Bundle s) {
         super.onCreate(s);
         long id = getArguments().getLong(ARG_ID);
-        entrainement = ManagerGlobal.getInstance().getManagerEntrainement().getById(id);
+        entrainement = ManagerGlobal.getInstance().getManagerEntrainement().getById(requireContext(),id);
     }
 
     @Override
@@ -75,10 +77,18 @@ public class EntrainementEnCoursFragment extends Fragment {
             if (dureeMin < 1) dureeMin = 1;
 
             entrainement.setDureeMin(dureeMin);
-            String date = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                    .format(new Date());
+            entrainement.setDateSeance(String.valueOf(System.currentTimeMillis()));
 
-            entrainement.setDateSeance(date);
+            Programme p = entrainement.getProgramme();
+
+            for (Exercice ex : p.getExercices()) {
+                ex.setEstUneCopie(true);
+                ex.setId(0);
+
+                for (Serie s : ex.getSeries()) {
+                    s.setId(0);
+                }
+            }
 
             ManagerGlobal.getInstance()
                     .getManagerEntrainement()

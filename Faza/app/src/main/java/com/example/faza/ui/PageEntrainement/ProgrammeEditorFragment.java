@@ -76,7 +76,7 @@ public class ProgrammeEditorFragment extends Fragment {
         if (mode == ProgrammeEditorMode.EDIT_TRAINING) {
             long eId = args.getLong(ARG_ENTRAINEMENT_ID);
             btnEnregistrer.setVisibility(View.GONE);
-            entrainement = ManagerGlobal.getInstance().getManagerEntrainement().getById(eId);
+            entrainement = ManagerGlobal.getInstance().getManagerEntrainement().getById(requireContext(),eId);
             programme = entrainement.getProgramme();
         } else {
             long pId = args.getLong(ARG_PROGRAMME_ID);

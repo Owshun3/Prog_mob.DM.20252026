@@ -8,15 +8,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.faza.R;
 import com.example.faza.data.entites.Entrainement;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class HistoriqueAdapter extends RecyclerView.Adapter<HistoriqueAdapter.HistoVH> {
 
     private final List<Entrainement> data;
 
-    public HistoriqueAdapter(List<Entrainement> data) {
-        this.data = data;
-    }
+    public HistoriqueAdapter(List<Entrainement> data) { this.data = data; }
 
     @NonNull
     @Override
@@ -30,13 +32,25 @@ public class HistoriqueAdapter extends RecyclerView.Adapter<HistoriqueAdapter.Hi
     public void onBindViewHolder(@NonNull HistoVH h, int pos) {
         Entrainement e = data.get(pos);
 
-        h.txtTitre.setText(e.getProgramme() != null ?
-                e.getProgramme().getNom() :
-                "Entraînement");
+        h.txtTitre.setText(
+                e.getProgramme() != null ?
+                        e.getProgramme().getNom() :
+                        "Entraînement"
+        );
 
-        h.txtDate.setText(e.getDateSeance() == null ?
-                "Date inconnue" :
-                e.getDateSeance());
+        String dateAffiche;
+        if (e.getDateSeance() == null || e.getDateSeance().isEmpty()) {
+            dateAffiche = "Date inconnue";
+        } else {
+            try {
+                long ts = Long.parseLong(e.getDateSeance());
+                dateAffiche = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                        .format(new Date(ts));
+            } catch (Exception ex) {
+                dateAffiche = e.getDateSeance();
+            }
+        }
+        h.txtDate.setText(dateAffiche);
 
         h.txtDuree.setText(e.getDureeMin() + " min");
     }
